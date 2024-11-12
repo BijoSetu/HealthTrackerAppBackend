@@ -1,25 +1,30 @@
 package ie.setu.domain.repository
-import ie.setu.domain.User
+import ie.setu.domain.PayloadLogin
 import ie.setu.domain.db.Users
+import ie.setu.domain.User
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.selectAll
 import ie.setu.utils.mapToUser
+import jdk.internal.org.objectweb.asm.util.Printer
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.deleteWhere
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.update
+import java.sql.SQLException
 
 class UserDao{
 
+//    Create a new user if not already exists
+    fun registerNewUser(user : User){
+        transaction {
+       Users.insert {
+                it[name]=user.name
+                it[email]=user.email
+                it[password]=user.password
+            }
+        }
+    }
 
-//     val users = arrayListOf<User>(
-//        User( id = 1,name = "Alice", email = "alice@alice.kt"),
-//        User( id = 1,name = "Mark", email = "Mark @kt"),
-//                User( id = 1,name = "Dean", email = "Dean@kt"),
-//    User( id = 4,name = "Jack", email = "jack@kt")
-//    )
 
-         fun getAll(): ArrayList<User> {
+
+         fun getAll(): List<User> {
              val userList: ArrayList<User> = arrayListOf()
              transaction {
                  Users.selectAll().map {
@@ -27,9 +32,29 @@ class UserDao{
              }
              return userList
          }
-    fun findById(id: Int): User?{
+//logging in a user by checking the email and password has a matching user in the database
+
+    fun loginUser(payloadLogin: PayloadLogin):Boolean{
+        return try {
+     transaction {
+//         took this line from chatgpt as part of troubleshooting to find the syntax
+        Users.selectAll().where { Users.email eq payloadLogin.email and (Users.password eq payloadLogin.password) }
+            .singleOrNull() != null
+    }
+}catch (e: Exception){
+     println(e.toString())
+            return false
+}catch (e:SQLException){
+
+    println(e.toString())
+            return false
+}
+
+    }
+
+    fun getUserById(id: Int):User?{
         return transaction {
-            Users.selectAll().where { Users.id eq id }
+            Users.selectAll().where { Users.user_id eq id }
                 .map{mapToUser(it)}
                 .firstOrNull()
         }
@@ -44,24 +69,25 @@ class UserDao{
           }
     }
 
-    fun findByEmail(email :String): User?{ return transaction {
+    fun findByEmail(email :String):User?{return transaction {
         Users.selectAll().where { Users.email eq email}
             .map{mapToUser(it)}
             .firstOrNull()
     }}
 
-
-    fun delete(id: Int):Int {  return transaction{
-        Users.deleteWhere{ Users.id eq id }
+//delete a user from db
+    fun deleteUser(id: Int):Int {  return transaction{
+        Users.deleteWhere{ Users.user_id eq id }
     }}
 
-
-         fun update(id: Int, user: User){
-             transaction {
+//update option for user to update the name ,email and password
+         fun updateUser(id: Int, user:PayloadLogin):Int{
+            return  transaction {
                  Users.update ({
-                     Users.id eq id}) {
-                     it[name] = user.name
+                     Users.user_id eq id}) {
+
                      it[email] = user.email
+                     it[password] = user.password
                  }
              }
          }
