@@ -1,7 +1,7 @@
 package ie.setu.config
 
 import io.javalin.Javalin
-import ie.setu.controllers.HealthTrackerController
+import ie.setu.controllers.UserController
 
 class JavalinConfig{
     private fun getRemoteAssignedPort(): Int {
@@ -31,7 +31,11 @@ class JavalinConfig{
 //    }
 
     private fun registerRoutes(app: Javalin) {
-        app.get("/api/users", HealthTrackerController::getAllUsers)
-        app.get("/api/users/{user-id}", HealthTrackerController::getUserByUserId)
+        app.post("/api/users/user-login",UserController::loginUser)
+        app.get("/api/users", UserController::getAllUsers)
+        app.get("/api/users/{user-id}", UserController::getUserById)
+        app.post("/api/users/register-new-user", UserController::registerNewUser)
+        app.delete("/api/users/delete-user/{user-id}", UserController::deleteUser)
+        app.put("/api/users/update/{user-id}",UserController::updateUser)
     }
 }
