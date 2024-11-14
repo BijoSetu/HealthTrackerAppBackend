@@ -12,19 +12,23 @@ import java.sql.SQLException
 class UserDao{
 
 //    Create a new user if not already exists
-    fun registerNewUser(user : User){
-        transaction {
-       Users.insert {
-                it[name]=user.name
-                it[email]=user.email
-                it[password]=user.password
+fun registerNewUser(user: User): Boolean {
+    return transaction {
+        val existingUser = Users.selectAll().where { Users.email eq user.email }.singleOrNull()
+        if (existingUser != null) {
+            false
+        } else {
+            Users.insert {
+                it[name] = user.name
+                it[email] = user.email
+                it[password] = user.password
             }
+            true
         }
     }
+}
 
-
-
-         fun getAll(): List<User> {
+    fun getAll(): List<User> {
              val userList: ArrayList<User> = arrayListOf()
              transaction {
                  Users.selectAll().map {
@@ -65,6 +69,7 @@ class UserDao{
               Users.insert {
                   it[name] = user.name
                   it[email] = user.email
+                  it[password] = user.password
               }
           }
     }
