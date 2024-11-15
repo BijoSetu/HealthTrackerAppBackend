@@ -1,6 +1,7 @@
 package ie.setu.config
 
 import ie.setu.controllers.DailyGoalsController
+import ie.setu.controllers.DailyHabitsController
 import io.javalin.Javalin
 import ie.setu.controllers.UserController
 import ie.setu.utils.jsonObjectMapper
@@ -64,5 +65,13 @@ class JavalinConfig{
         app.get("/api/users/{user-id}/daily-goals",DailyGoalsController:: getAllDailyGoalsByUserId)
         app.delete("/api/users/{user-id}/daily-goals/{goal-id}", DailyGoalsController::deleteDailyGoalsFromUser)
         app.put("/api/users/{user-id}/daily-goals/{goal-id}",DailyGoalsController::updateDailyGoalsForUser)
+
+        //        daily-habits-apis-for-creating-daily-habits
+
+         app.post("/api/users/{user-id}/daily-habits", DailyHabitsController::addDailyHabitsToUser)
+         app.delete("/api/users/{user-id}/daily-habits/{id}", DailyHabitsController::deleteDailyHabitLog)
+         app.get("/api/users/{user-id}/daily-habits", DailyHabitsController::getAllDailyHabit)
+        app.put("/api/users/{user-id}/daily-habits/{id}", DailyHabitsController::updateDailyHabit)
+
     }
 }
