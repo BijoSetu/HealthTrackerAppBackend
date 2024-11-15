@@ -2,6 +2,7 @@ package ie.setu.config
 
 import ie.setu.controllers.DailyGoalsController
 import ie.setu.controllers.DailyHabitsController
+import ie.setu.controllers.LifestyleSuggestionController
 import io.javalin.Javalin
 import ie.setu.controllers.UserController
 import ie.setu.utils.jsonObjectMapper
@@ -72,6 +73,10 @@ class JavalinConfig{
          app.delete("/api/users/{user-id}/daily-habits/{id}", DailyHabitsController::deleteDailyHabitLog)
          app.get("/api/users/{user-id}/daily-habits", DailyHabitsController::getAllDailyHabit)
         app.put("/api/users/{user-id}/daily-habits/{id}", DailyHabitsController::updateDailyHabit)
+
+        //        lifestyle-suggest-api-to-suggest-user-habitSuggestions
+
+        app.get("/api/users/{user-id}/life-style-suggestion",LifestyleSuggestionController::generateLifeStyleSuggestions)
 
     }
 }
