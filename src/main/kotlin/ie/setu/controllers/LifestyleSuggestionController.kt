@@ -6,68 +6,78 @@ import ie.setu.domain.repository.DailyHabitsDAO
 import ie.setu.domain.repository.LifestyleSuggestionDAO
 import io.javalin.http.Context
 import org.joda.time.DateTime
+import java.sql.SQLException
 
 
 object LifestyleSuggestionController {
 
     fun generateLifeStyleSuggestions(ctx: Context) {
 
-        val mapper = jacksonObjectMapper()
-        var  userId = ctx.pathParam("user-id").toIntOrNull()
-        val lifeStyleSuggesterDao = LifestyleSuggestionDAO()
-        val suggestions = mutableListOf<String>()
-        if (userId == null) {
-            ctx.status(400).json(mapOf("error" to "Invalid user id"))
-            return
-        }
-        val allDailyHabits = lifeStyleSuggesterDao.getlifestyleSuggestions(userId)
+        try {
+            val mapper = jacksonObjectMapper()
+            var  userId = ctx.pathParam("user-id").toIntOrNull()
+            val lifeStyleSuggesterDao = LifestyleSuggestionDAO()
+            val suggestions = mutableListOf<String>()
+            if (userId == null) {
+                ctx.status(400).json(mapOf("error" to "Invalid user id"))
+                return
+            }
+            val allDailyHabits = lifeStyleSuggesterDao.getlifestyleSuggestions(userId)
 
-        if (allDailyHabits.size < 7) {
-            suggestions.add("Not enough data to provide suggestions. Please record more habits for atleast a week.")
+            if (allDailyHabits.size < 7) {
+                suggestions.add("Not enough data to provide suggestions. Please record more habits for atleast a week.")
+                ctx.json(mapOf("suggestions" to suggestions))
+                return
+
+            }
+
+
+            val sumOfHabits = calculateSumOfHabits(allDailyHabits)
+            if (sumOfHabits.hoursSlept < 40) {
+                suggestions.add("You should get more sleep (less than 6 hours on average per day).")
+            }
+
+            if (sumOfHabits.alcoholIntakeMl > 200) {
+                suggestions.add("You should reduce alcohol intake ( avg of more than 200ml per day).")
+            }
+
+            if (sumOfHabits.caffeineIntakeMg > 2500) {
+                suggestions.add("You should watch your caffeine intake as it is over 2500mg in a week.")
+            }
+
+            if (sumOfHabits.screenTimeMinutes > 900) {
+                suggestions.add("You should try to reduce your screen time usage (more than 15 hours per week).")
+            }
+
+            if (sumOfHabits.stepsWalked < 70000) {
+                suggestions.add("You should get more steps in (avg of less than 7000 steps per day).")
+            }
+
+            if (sumOfHabits.carbsIntakeG > 2000) {
+                suggestions.add("You should watch your carbs intake (currently your intake is more than 2000 grams weekly).")
+            }
+
+            if (sumOfHabits.carbsIntakeG < 1800) {
+                suggestions.add("You should have more carbs in your diet.")
+            }
+
+            if (sumOfHabits.proteinIntakeG < 350) {
+                suggestions.add("You should add more protein to your diet.")
+            }
+
+            if (sumOfHabits.totalTimeExercised < 150) {
+                suggestions.add("You should exercise more as your weekly time spent on exercise is low.")
+            }
+
             ctx.json(mapOf("suggestions" to suggestions))
-            return
+        }catch (e: Exception){
+            ctx.status(400).json(mapOf("error" to e.message.toString()))
+        }catch (e: SQLException){
 
+            ctx.status(400).json(mapOf("error" to e.message.toString()))
         }
 
 
-        val sumOfHabits = calculateSumOfHabits(allDailyHabits)
-        if (sumOfHabits.hoursSlept < 40) {
-            suggestions.add("You should get more sleep (less than 6 hours on average per day).")
-        }
-
-        if (sumOfHabits.alcoholIntakeMl > 200) {
-            suggestions.add("You should reduce alcohol intake ( avg of more than 200ml per day).")
-        }
-
-        if (sumOfHabits.caffeineIntakeMg > 2500) {
-            suggestions.add("You should watch your caffeine intake as it is over 2500mg in a week.")
-        }
-
-        if (sumOfHabits.screenTimeMinutes > 900) {
-            suggestions.add("You should try to reduce your screen time usage (more than 15 hours per week).")
-        }
-
-        if (sumOfHabits.stepsWalked < 70000) {
-            suggestions.add("You should get more steps in (avg of less than 7000 steps per day).")
-        }
-
-        if (sumOfHabits.carbsIntakeG > 2000) {
-            suggestions.add("You should watch your carbs intake (currently your intake is more than 2000 grams weekly).")
-        }
-
-        if (sumOfHabits.carbsIntakeG < 1800) {
-            suggestions.add("You should have more carbs in your diet.")
-        }
-
-        if (sumOfHabits.proteinIntakeG < 350) {
-            suggestions.add("You should add more protein to your diet.")
-        }
-
-        if (sumOfHabits.totalTimeExercised < 150) {
-            suggestions.add("You should exercise more as your weekly time spent on exercise is low.")
-        }
-
-        ctx.json(mapOf("suggestions" to suggestions))
 
     }
 }

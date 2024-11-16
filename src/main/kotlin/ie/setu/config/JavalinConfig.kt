@@ -1,10 +1,7 @@
 package ie.setu.config
 
-import ie.setu.controllers.DailyGoalsController
-import ie.setu.controllers.DailyHabitsController
-import ie.setu.controllers.LifestyleSuggestionController
+import ie.setu.controllers.*
 import io.javalin.Javalin
-import ie.setu.controllers.UserController
 import ie.setu.utils.jsonObjectMapper
 import io.javalin.json.JavalinJackson
 
@@ -77,6 +74,14 @@ class JavalinConfig{
         //        lifestyle-suggest-api-to-suggest-user-habitSuggestions
 
         app.get("/api/users/{user-id}/life-style-suggestion",LifestyleSuggestionController::generateLifeStyleSuggestions)
+
+
+        //    health-milestones-apis-to-track-user-milestones
+
+        app.post("/api/users/{user-id}/milestones", MileStonesController::addMileStonesToUser)
+        app.put("/api/users/{user-id}/milestones/{id}", MileStonesController::updateMileStoneOfUser)
+        app.delete("/api/users/{user-id}/milestones/{id}", MileStonesController::deleteMileStoneOfUser)
+        app.get("/api/users/{user-id}/milestones", MileStonesController::getAllMilesStonesOfUser)
 
     }
 }
