@@ -2,6 +2,8 @@ package ie.setu.controllers
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import ie.setu.controllers.controllerComponents.validateUserId
+import ie.setu.controllers.controllerComponents.validateUserIdAndId
 import ie.setu.domain.DailyGoal
 import ie.setu.domain.DailyHabit
 import ie.setu.domain.db.DailyHabits
@@ -14,14 +16,11 @@ object DailyHabitsController {
     fun addDailyHabitsToUser(ctx: Context) {
 
         val mapper = jacksonObjectMapper()
-        var  userId = ctx.pathParam("user-id").toIntOrNull()
+        val  userId = ctx.pathParam("user-id").toIntOrNull()
         val dailyHabitsDao = DailyHabitsDAO()
 
-        if (userId == null) {
-            ctx.status(400).json(mapOf("error" to "Invalid user id"))
-            return
-        }
-        val dailyHabit = mapper.readValue<DailyHabit>(ctx.body()).copy(userId = userId)
+       if(!validateUserId(ctx,userId ))return
+        val dailyHabit = mapper.readValue<DailyHabit>(ctx.body()).copy(userId = userId!!)
         dailyHabitsDao.addDailyHabits(dailyHabit)
         ctx.status(200).json(mapOf("success" to "true" , "message" to "daily Habit added"))
     }
@@ -30,12 +29,10 @@ object DailyHabitsController {
          val userId = ctx.pathParam("user-id").toIntOrNull()
         val id = ctx.pathParam("id").toIntOrNull()
 val dailyHabitsDao = DailyHabitsDAO()
-        if (userId == null || id == null) {
-            ctx.status(400).json(mapOf("error" to "Invalid user id"))
-            return
-        }
+       if (!validateUserIdAndId(ctx,userId,id ))  return
 
-        val deleted = dailyHabitsDao.deleteDailyHabit(id, userId)
+
+        val deleted = dailyHabitsDao.deleteDailyHabit(id!!, userId!!)
         if (deleted == 1) {
             ctx.status(200).json(mapOf("success" to "true", "message" to "Daily Habit log  is  deleted"))
         } else {
@@ -46,7 +43,7 @@ val dailyHabitsDao = DailyHabitsDAO()
     fun getAllDailyHabit(ctx: Context) {
         val userId = ctx.pathParam("user-id").toInt()
         val dailyHabitsDao = DailyHabitsDAO()
-
+if(!validateUserId(ctx,userId ))return
         val dailyHabits = dailyHabitsDao.getAllDailyHabitsByUserId(userId)
         ctx.json(dailyHabits)
     }
@@ -57,13 +54,10 @@ val dailyHabitsDao = DailyHabitsDAO()
         val userId = ctx.pathParam("user-id").toIntOrNull()
         val id = ctx.pathParam("id").toIntOrNull()
 
-        if(userId ==null || id == null) {
-            ctx.status(400).json(mapOf("error" to "Invalid user id"))
-            return
-        }
+       if (!validateUserId(ctx,userId)) return
         val mapper = jacksonObjectMapper()
         val dailyHabitDao = DailyHabitsDAO()
-        val updatedDailyHabit = mapper.readValue<DailyHabit>(ctx.body()).copy(userId = userId, id = id)
+        val updatedDailyHabit = mapper.readValue<DailyHabit>(ctx.body()).copy(userId = userId!!, id = id!!)
 
         val updatedHabit = dailyHabitDao.updateDailyHabit(id,userId,updatedDailyHabit)
         if (updatedHabit == 1) {

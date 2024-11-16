@@ -2,6 +2,9 @@ package ie.setu.controllers
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import ie.setu.controllers.controllerComponents.sendResponse
+import ie.setu.controllers.controllerComponents.validateUserId
+import ie.setu.controllers.controllerComponents.validateUserIdAndId
 
 import ie.setu.domain.DailyGoal
 import ie.setu.domain.User
@@ -9,6 +12,7 @@ import ie.setu.domain.db.DailyGoals
 import ie.setu.domain.repository.DailyGoalsDAO
 import ie.setu.domain.repository.UserDao
 import io.javalin.http.Context
+import java.sql.SQLException
 
 object DailyGoalsController {
 
@@ -17,60 +21,77 @@ private val dailyGoalsDao = DailyGoalsDAO()
 //    adding a daily goal for a user
     fun addDailyGoalsToUser(ctx: Context) {
 
-        val mapper = jacksonObjectMapper()
-        var  userId = ctx.pathParam("user-id").toIntOrNull()
+        try {
+            val mapper = jacksonObjectMapper()
+            var  userId = ctx.pathParam("user-id").toIntOrNull()
 
-        if (userId == null) {
-            ctx.status(400).json(mapOf("error" to "Invalid user id"))
-            return
+            if(!validateUserId(ctx, userId))return
+            val dailyGoals = mapper.readValue<DailyGoal>(ctx.body()).copy(userId = userId!!)
+            dailyGoalsDao.addDailyGoals(dailyGoals)
+            ctx.status(200).json(mapOf("success" to "true" , "message" to "daily goal added"))
+        }catch(e:Exception){
+            ctx.status(400).json(mapOf("error" to e.message.toString()))
+        }catch (e: SQLException){
+            ctx.status(400).json(mapOf("error" to e.message.toString()))
         }
-        val dailyGoals = mapper.readValue<DailyGoal>(ctx.body()).copy(userId = userId)
-        dailyGoalsDao.addDailyGoals(dailyGoals)
-        ctx.status(200).json(mapOf("success" to "true" , "message" to "daily goal added"))
-    }
 
+    }
+//deleting a daily goal of a user
     fun deleteDailyGoalsFromUser(ctx: Context) {
-        val id = ctx.pathParam("goal-id").toIntOrNull()
-        val userId = ctx.pathParam("user-id").toIntOrNull()
 
-        if (id == null || userId == null) {
-            ctx.status(400).json(mapOf("error" to "Invalid user id or goal id"))
-            return
+        try {
+            val id = ctx.pathParam("goal-id").toIntOrNull()
+            val userId = ctx.pathParam("user-id").toIntOrNull()
+
+            if(!validateUserIdAndId(ctx, userId, id)) return
+
+            val deleted = dailyGoalsDao.deleteDailyGoal(id!!, userId!!)
+            sendResponse(ctx,deleted,"deleted","deleting")
+        }catch(e:Exception){
+            ctx.status(400).json(mapOf("error" to e.message.toString()))
+        }catch(e:SQLException){
+            ctx.status(400).json(mapOf("error" to e.message.toString()))
         }
 
-        val deleted = dailyGoalsDao.deleteDailyGoal(id, userId)
-        if (deleted == 1) {
-            ctx.status(200).json(mapOf("success" to "true", "message" to "Daily goal is  deleted"))
-        } else {
-            ctx.status(404).json(mapOf("error" to "Daily goal does not exist"))
-        }
     }
-
+//getting all the daily goals from a user
     fun getAllDailyGoalsByUserId(ctx: Context) {
-        val userId = ctx.pathParam("user-id").toInt()
 
-        val dailyGoals = dailyGoalsDao.getAllDailyGoalsByUserId(userId)
-        ctx.json(dailyGoals)
+        try {
+            val userId = ctx.pathParam("user-id").toInt()
+
+            val dailyGoals = dailyGoalsDao.getAllDailyGoalsByUserId(userId)
+
+            ctx.json(dailyGoals)
+        }catch (e: SQLException){
+            ctx.status(400).json(mapOf("error" to e.message.toString()))
+        }catch (e:Exception){
+            ctx.status(400).json(mapOf("error" to e.message.toString()))
+        }
+
     }
-
+//updating a daily goal from a user
     fun updateDailyGoalsForUser(ctx: Context) {
-        val mapper = jacksonObjectMapper()
-        val id = ctx.pathParam("goal-id").toIntOrNull()
-        val userId = ctx.pathParam("user-id").toIntOrNull()
 
-        if (id == null || userId == null) {
-            ctx.status(400).json(mapOf("error" to "Invalid user-id or id of the goal"))
-            return
+
+        try {
+            val mapper = jacksonObjectMapper()
+            val id = ctx.pathParam("goal-id").toIntOrNull()
+            val userId = ctx.pathParam("user-id").toIntOrNull()
+
+            if(!validateUserIdAndId(ctx, userId, id))return
+
+            val updatedDailyGoal = mapper.readValue<DailyGoal>(ctx.body()).copy(userId = userId!!, id = id!!)
+
+            val updated = dailyGoalsDao.updateDailyGoal(id,userId,updatedDailyGoal)
+            sendResponse(ctx,updated,"updated","updating")
+        }catch(e:SQLException){
+            ctx.status(400).json(mapOf("error" to e.message.toString()))
+        }catch (e:Exception){
+            ctx.status(400).json(mapOf("error" to e.message.toString()))
         }
 
-        val updatedDailyGoal = mapper.readValue<DailyGoal>(ctx.body()).copy(userId = userId, id = id)
 
-        val updated = dailyGoalsDao.updateDailyGoal(id,userId,updatedDailyGoal)
-        if (updated== 1) {
-            ctx.status(200).json(mapOf("success" to "true", "message" to "Daily goal updated"))
-        } else {
-            ctx.status(404).json(mapOf("error" to "Daily goal not found"))
-        }
     }
 
 }

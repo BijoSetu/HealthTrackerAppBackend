@@ -1,10 +1,9 @@
 package ie.setu.utils
 import ie.setu.domain.DailyGoal
 import ie.setu.domain.DailyHabit
-import ie.setu.domain.db.Users
+import ie.setu.domain.Milestone
 import ie.setu.domain.User
-import ie.setu.domain.db.DailyGoals
-import ie.setu.domain.db.DailyHabits
+import ie.setu.domain.db.*
 import org.jetbrains.exposed.sql.ResultRow
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
@@ -47,3 +46,13 @@ fun mapToDailyHabits(it: ResultRow) = DailyHabit(
     alcoholIntakeMl = it[DailyHabits.alcoholIntakeMl],
 )
 
+fun mapToMileStones(it: ResultRow) = Milestone(
+
+    id= it[MileStones.id],
+    userId = it[MileStones.userId],
+    milestone = it[MileStones.milestoneName],
+    notes = it[MileStones.notes],
+    created = it[MileStones.createdAt],
+    updated = it[MileStones.updatedAt],
+    achievedDate = it[MileStones.achievedDate]
+)
