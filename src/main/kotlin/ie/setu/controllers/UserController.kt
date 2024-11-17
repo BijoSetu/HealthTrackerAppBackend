@@ -7,6 +7,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import ie.setu.domain.PayloadLogin
 import ie.setu.domain.User
+import java.sql.SQLException
 
 
 object UserController {
@@ -14,7 +15,22 @@ object UserController {
     private val userDao = UserDao()
 
     fun getAllUsers(ctx: Context) {
-        ctx.json(userDao.getAll())
+
+
+        try {
+            val allUsers = userDao.getAll()
+
+            if(allUsers.isEmpty()) {
+                ctx.status(404).json(mapOf("error" to "No users found"))
+            }else{
+                ctx.status(200).json(allUsers)
+            }
+        }catch (e: Exception){
+            ctx.json(mapOf("error" to e.message))
+        }catch (e: SQLException){
+            ctx.json(mapOf("error" to e.message))
+        }
+
     }
 
 //    logging in a user if already exists
@@ -35,8 +51,8 @@ fun loginUser(ctx: Context):Boolean {
     fun getUserById(ctx: Context) {
         val user = userDao.getUserById(ctx.pathParam("user-id").toInt())
         if (user != null) {
-            ctx.json(user)
-        }
+           ctx.status(200).json(mapOf("success" to true , "user" to user))
+        }else {ctx.status(404).json(mapOf("error" to "User not found")) }
     }
 //    registering a new user
     fun registerNewUser(ctx: Context) {
