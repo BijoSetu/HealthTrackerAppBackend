@@ -9,7 +9,7 @@ import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 
 fun mapToUser(it: ResultRow) = User(
-    user_id = it[Users.user_id],
+    userid = it[Users.userId],
     name = it[Users.name],
     email = it[Users.email],password = it[Users.password],
 )

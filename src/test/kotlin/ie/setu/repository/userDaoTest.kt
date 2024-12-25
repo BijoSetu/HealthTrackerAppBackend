@@ -47,7 +47,7 @@ class UsersDaoTest {
 
         @Test
         fun `creating user with an email that already exists in db returns error`(){
-            val newUserWithExistingEmail = User(name = "john", email ="alice@wonderland.com", user_id = 4, password = "Password123")
+            val newUserWithExistingEmail = User(name = "john", email ="alice@wonderland.com", userid = 4, password = "Password123")
             transaction {
 
              val userDao=  populateUserTable()
@@ -66,9 +66,9 @@ class UsersDaoTest {
 
                 //Act & Assert
                 assertEquals(3, userDao.getAll().size)
-                assertEquals(user1, userDao.getUserById(user1.user_id))
-                assertEquals(user2, userDao.getUserById(user2.user_id))
-                assertEquals(user3, userDao.getUserById(user3.user_id))
+                assertEquals(user1, userDao.getUserById(user1.userid))
+                assertEquals(user2, userDao.getUserById(user2.userid))
+                assertEquals(user3, userDao.getUserById(user3.userid))
             }
 
         }
@@ -166,7 +166,7 @@ fun `logging in a user with an existing and matching email and password returns 
 
                 //Act & Assert
                 val user3Updated = PayloadLogin( email = "bob@gmail.com",password = "bobPassword")
-                userDAO.updateUser(user3.user_id, user3Updated)
+                userDAO.updateUser(user3.userid, user3Updated)
                 val updatedUser =  userDAO.getUserById(3)
                 assertEquals( "bob@gmail.com", updatedUser!!.email)
             }

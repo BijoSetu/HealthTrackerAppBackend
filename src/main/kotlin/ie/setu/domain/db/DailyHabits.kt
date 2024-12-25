@@ -7,7 +7,7 @@ import org.joda.time.DateTime
 
 object DailyHabits : Table("dailyhabittracker") {
         val id = integer("id").autoIncrement()
-        val userId = integer("user_id").references(Users.user_id)
+        val userId = integer("userid").references(Users.userId)
         val date = datetime("date").nullable()
 
         val hoursSlept = double("hours_slept")

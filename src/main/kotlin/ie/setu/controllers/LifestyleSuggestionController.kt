@@ -11,11 +11,15 @@ import java.sql.SQLException
 
 object LifestyleSuggestionController {
 
+//    suggesting a life style suggestion to the user based on the dailyhabits of the user based upon the
+//    last 7 days' data , for eg if the user has sleep less than 40 over 7 days the function would recomment the
+//    user to get better sleep
+
     fun generateLifeStyleSuggestions(ctx: Context) {
 
         try {
             val mapper = jacksonObjectMapper()
-            var  userId = ctx.pathParam("user-id").toIntOrNull()
+            var  userId = ctx.pathParam("userId").toIntOrNull()
             val lifeStyleSuggesterDao = LifestyleSuggestionDAO()
             val suggestions = mutableListOf<String>()
             if (userId == null) {
@@ -70,9 +74,9 @@ object LifestyleSuggestionController {
             }
 
             ctx.json(mapOf("suggestions" to suggestions))
-        }catch (e: Exception){
-            ctx.status(400).json(mapOf("error" to e.message.toString()))
         }catch (e: SQLException){
+            ctx.status(400).json(mapOf("error" to e.message.toString()))
+        }catch (e: Exception){
 
             ctx.status(400).json(mapOf("error" to e.message.toString()))
         }
@@ -81,6 +85,8 @@ object LifestyleSuggestionController {
 
     }
 }
+
+//calculating the sum of habit values over the period of 7 days
 
 fun calculateSumOfHabits(dailyHabits: List<DailyHabit>): DailyHabit {
     val sumHoursSlept = dailyHabits.sumOf { it.hoursSlept }

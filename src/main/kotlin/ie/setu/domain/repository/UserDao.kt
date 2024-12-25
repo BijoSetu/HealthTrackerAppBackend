@@ -58,12 +58,18 @@ fun registerNewUser(user: User): Boolean {
 
     fun getUserById(id: Int):User?{
         return transaction {
-            Users.selectAll().where { Users.user_id eq id }
+            Users.selectAll().where { Users.userId eq id }
                 .map{mapToUser(it)}
                 .firstOrNull()
         }
     }
-
+    fun getUserByEmail(email: String): User? {
+        return transaction {
+            Users.selectAll().where { Users.email eq email }
+                .map { mapToUser(it) }
+                .firstOrNull()
+        }
+    }
       fun save(user: User){
           transaction {
               Users.insert {
@@ -82,14 +88,14 @@ fun registerNewUser(user: User): Boolean {
 
 //delete a user from db
     fun deleteUser(id: Int):Int {  return transaction{
-        Users.deleteWhere{ Users.user_id eq id }
+        Users.deleteWhere{ Users.userId eq id }
     }}
 
 //update option for user to update the name ,email and password
          fun updateUser(id: Int, user:PayloadLogin):Int{
             return  transaction {
                  Users.update ({
-                     Users.user_id eq id}) {
+                     Users.userId eq id}) {
 
                      it[email] = user.email
                      it[password] = user.password

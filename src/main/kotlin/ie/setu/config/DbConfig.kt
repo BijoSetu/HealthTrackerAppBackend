@@ -11,11 +11,11 @@ class DbConfig {
 
     fun getDbConnection(): Database {
 
-        val PGHOST= "dpg-csr90kl6l47c73edoukg-a.frankfurt-postgres.render.com"
+        val PGHOST= "dpg-ctjjkh8gph6c738hk0eg-a.frankfurt-postgres.render.com"
         val PGPORT = "5432"
-        val PGUSER = "bijo_setu"
-        val PGPASSWORD = "D6qdX4dmxMyBZ7gboXktHVyg4uJf5ABB"
-        val PGDATABASE = "ht_db_of3r"
+        val PGUSER = "healthtrackerapp_user"
+        val PGPASSWORD = "23xwwqTffOm2xXDZt8YkVUH04XDtp1qo"
+        val PGDATABASE = "healthtrackerapp"
 
 
         //url format should be jdbc:postgresql://host:port/database

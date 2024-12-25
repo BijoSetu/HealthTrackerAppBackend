@@ -21,8 +21,8 @@ class DailyGoalsDAO {
                it[goalDescription] = dailyGoals.goalDescription
                it[isCompleted] = dailyGoals.isCompleted
                it[priority] = dailyGoals.priority
-//               it[ createdAt] = dailyGoals.createdAt
-//               it[date] = dailyGoals.date
+               it[ createdAt] = dailyGoals.createdAt
+               it[date] = dailyGoals.date
                it[notes ] = dailyGoals.notes
            }
 
@@ -53,7 +53,7 @@ class DailyGoalsDAO {
                 it[goalDescription] = updatedGoal.goalDescription
                 it[isCompleted] = updatedGoal.isCompleted
                 it[priority] = updatedGoal.priority
-//                it[date] = updatedGoal.date
+                it[date] = updatedGoal.date
                 it[notes] = updatedGoal.notes
             }
         }
