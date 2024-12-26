@@ -4,14 +4,16 @@ import ie.setu.controllers.*
 import io.javalin.Javalin
 import ie.setu.utils.jsonObjectMapper
 import io.javalin.json.JavalinJackson
+import io.javalin.vue.VueComponent
 
 class JavalinConfig{
 
     fun startJavalinService(): Javalin {
         val app = Javalin.create {
             it.jsonMapper(JavalinJackson(jsonObjectMapper()))
-        }
-            .apply{
+            it.staticFiles.enableWebjars()
+            it.vue.vueInstanceNameInJs = "app"
+        }.apply{
                 exception(Exception::class.java) { e, ctx -> e.printStackTrace() }
                 error(404) { ctx -> ctx.json("404 - Not Found") }
             }
@@ -59,12 +61,21 @@ class JavalinConfig{
         app.delete("/api/users/{user-id}/milestones/{id}", MileStonesController::deleteMileStoneOfUser)
         app.get("/api/users/{user-id}/milestones", MileStonesController::getAllMilesStonesOfUser)
 
+//        vue endpoint
+        app.get("/", VueComponent("<home-page></home-page>"))
+        app.get("/users", VueComponent("<user-overview></user-overview>"))
+        app.get("/users/{userId}", VueComponent("<user-profile></user-profile>"))
+        app.get("/users/{userId}/daily-goals", VueComponent("<user-daily-goals-overview></user-daily-goals-overview>"))
+        app.get("/login-or-signup", VueComponent("<login-or-signup></login-or-signup>"))
+
+
+
     }
 
     private fun getRemoteAssignedPort(): Int {
         val remotePort = System.getenv("PORT")
         return if (remotePort != null) {
             Integer.parseInt(remotePort)
-        } else 7003
+        } else 7000
     }
 }
