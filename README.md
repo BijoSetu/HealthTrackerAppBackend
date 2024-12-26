@@ -32,6 +32,4 @@ Run the application:
 
 The application will be accessible at http://localhost:7003. 
 
-Contact If you have any questions, issues, or feedback, feel free to reach out to us:
-
-GitHub: https://github.com/ashika-hussain
+Contact If you have any questions, issues, or feedback, feel free to reach out to us
