@@ -16,7 +16,7 @@ class MileStonesDAO {
         return transaction {
             MileStones.insert {
                 it[userId] = milestone.userId
-                it[milestoneName] = milestone.milestone
+                it[milestoneName] = milestone.milestoneName
                 it[achievedDate] = milestone.achievedDate ?: DateTime.now()
                 it[notes] = milestone.notes
                 it[createdAt] = milestone.created ?: DateTime.now()
@@ -37,7 +37,7 @@ class MileStonesDAO {
     fun updateMilestone(id:Int,userId: Int,milestone: Milestone): Int {
         return transaction {
             MileStones.update({ MileStones.id eq milestone.id }) {
-                it[milestoneName] = milestone.milestone
+                it[milestoneName] = milestone.milestoneName
                 it[achievedDate] = milestone.achievedDate ?: DateTime.now()
                 it[notes] = milestone.notes
                 it[updatedAt] = DateTime.now()

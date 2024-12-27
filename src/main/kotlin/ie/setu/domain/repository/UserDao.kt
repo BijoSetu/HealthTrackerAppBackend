@@ -38,23 +38,30 @@ fun registerNewUser(user: User): Boolean {
          }
 //logging in a user by checking the email and password has a matching user in the database
 
-    fun loginUser(payloadLogin: PayloadLogin):Boolean{
+    fun loginUser(payloadLogin: PayloadLogin): User? {
         return try {
-     transaction {
-//         took this line from chatgpt as part of troubleshooting to find the syntax
-        Users.selectAll().where { Users.email eq payloadLogin.email and (Users.password eq payloadLogin.password) }
-            .singleOrNull() != null
-    }
-}catch (e: Exception){
-     println(e.toString())
-            return false
-}catch (e:SQLException){
+            transaction {
+                val user = Users
+                    .selectAll().where { Users.email eq payloadLogin.email and (Users.password eq payloadLogin.password) }
+                    .singleOrNull()
 
-    println(e.toString())
-            return false
-}
-
+                if (user != null) {
+                    // Map the database row to a User object
+                    User(userid =user[Users.userId],
+                        name = user[Users.name],
+                        email = user[Users.email],
+                        password = user[Users.password]
+                    )
+                } else {
+                    null
+                }
+            }
+        } catch (e: Exception) {
+            println("Error during login: ${e.message}")
+            null
+        }
     }
+
 
     fun getUserById(id: Int):User?{
         return transaction {
@@ -96,7 +103,7 @@ fun registerNewUser(user: User): Boolean {
             return  transaction {
                  Users.update ({
                      Users.userId eq id}) {
-
+                    it[name]=user.name!!
                      it[email] = user.email
                      it[password] = user.password
                  }

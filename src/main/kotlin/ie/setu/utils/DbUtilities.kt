@@ -50,7 +50,7 @@ fun mapToMileStones(it: ResultRow) = Milestone(
 
     id= it[MileStones.id],
     userId = it[MileStones.userId],
-    milestone = it[MileStones.milestoneName],
+    milestoneName = it[MileStones.milestoneName],
     notes = it[MileStones.notes],
     created = it[MileStones.createdAt],
     updated = it[MileStones.updatedAt],

@@ -4,6 +4,7 @@ data class User(val userid:Int,val name:String, val email:String, val password:S
 
 
 data class PayloadLogin(
+    val name:String?,
     val email: String,
     val password: String
 )

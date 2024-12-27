@@ -39,9 +39,10 @@ object UserController {
         try {
             val mapper = jacksonObjectMapper()
             val userDetails = mapper.readValue<PayloadLogin>(ctx.body())
-            val userExists = userDao.loginUser(userDetails)
-            return if (userExists) {
-                ctx.status(200).json(mapOf("success" to true))
+            val user = userDao.loginUser(userDetails)
+            return if (user !== null) {
+                ctx.status(200).json(mapOf("success" to true,"user" to user))
+//                ctx.json(user)
                 true
             } else {
                 ctx.status(400).json(mapOf("success" to false, "error" to "User not found"))
@@ -79,9 +80,13 @@ object UserController {
             try {
                 val mapper = jacksonObjectMapper()
                 val user = mapper.readValue<User>(ctx.body())
-                userDao.registerNewUser(user)
-                ctx.json(user)
-                ctx.status(201)
+                if( userDao.registerNewUser(user)){
+                    ctx.json(user)
+                    ctx.status(201)
+                }else{
+                    ctx.json(mapOf("error" to "User already registered"))
+                    ctx.status(400)
+                    }
             } catch (e: SQLException) {
                 ctx.json(mapOf("error" to e.message.toString()))
             } catch (e: Exception) {
