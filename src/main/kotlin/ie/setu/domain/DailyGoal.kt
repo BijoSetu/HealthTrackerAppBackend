@@ -4,7 +4,7 @@ import org.joda.time.DateTime
 
 
 data class DailyGoal(
-    val id: Int,
+    val id: Int?,
     var userId: Int,
     val goalName: String,
     val goalDescription: String,

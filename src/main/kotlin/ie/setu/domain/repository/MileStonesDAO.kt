@@ -34,9 +34,9 @@ class MileStonesDAO {
         }
     }
 
-    fun updateMilestone(id:Int,userId: Int,milestone: Milestone): Int {
+    fun updateMilestone(id:Int,userid: Int,milestone: Milestone): Int {
         return transaction {
-            MileStones.update({ MileStones.id eq milestone.id }) {
+            MileStones.update({(MileStones.userId eq userid) and (MileStones.id eq id) }) {
                 it[milestoneName] = milestone.milestoneName
                 it[achievedDate] = milestone.achievedDate ?: DateTime.now()
                 it[notes] = milestone.notes
@@ -45,10 +45,11 @@ class MileStonesDAO {
         }
     }
 
-    fun deleteMilestone(userId: Int,milestoneId: Int): Int {
+    fun deleteMilestone(userid: Int, milestoneId: Int): Int {
         return transaction {
-            MileStones.deleteWhere { MileStones.id eq milestoneId }
+            MileStones.deleteWhere { (userId eq userid) and (id eq milestoneId) }
         }
     }
+
 
 }

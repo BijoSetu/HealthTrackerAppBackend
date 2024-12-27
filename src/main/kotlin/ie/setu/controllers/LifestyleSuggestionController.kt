@@ -26,7 +26,10 @@ object LifestyleSuggestionController {
                 ctx.status(400).json(mapOf("error" to "Invalid user id"))
                 return
             }
+            //this will retrieve the dailyhabits of the user for the past of max 7 days
             val allDailyHabits = lifeStyleSuggesterDao.getlifestyleSuggestions(userId)
+
+            // incase data is not available for a week the suggestor will prompt to add more habits
 
             if (allDailyHabits.size < 7) {
                 suggestions.add("Not enough data to provide suggestions. Please record more habits for atleast a week.")
@@ -34,6 +37,9 @@ object LifestyleSuggestionController {
                 return
 
             }
+            /* lifestyle suggestions are made as per the habits of the user for the last week ie;
+              7days the average is calculated from this
+                all the condition values in the functions below are based upon a weeks average */
 
             val sumOfHabits = calculateSumOfHabits(allDailyHabits)
             if (sumOfHabits.hoursSlept < 40) {
@@ -73,6 +79,7 @@ object LifestyleSuggestionController {
             }
 
             ctx.json(mapOf("suggestions" to suggestions))
+
         }catch (e: SQLException){
             ctx.status(400).json(mapOf("error" to e.message.toString()))
         }catch (e: Exception){

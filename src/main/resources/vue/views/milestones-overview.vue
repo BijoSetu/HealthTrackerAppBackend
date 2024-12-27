@@ -5,6 +5,7 @@
 
       <div class="container mt-4">
         <h3 class="text-left mb-4">Milestones List</h3>
+        <!--      if the loading is true it will show a lottie loading animation, for ux-->
 
         <div v-if="loading" class="d-flex justify-content-center">
           <dotlottie-player
@@ -48,6 +49,7 @@ app.component("milestones-overview",{
     loading:true
   }),
   created() {
+    // get the userid from local storage
     const userId = localStorage.getItem('userId');
     console.log('Retrieved User ID:', userId);
     axios.get(`/api/users/${userId}/milestones`)

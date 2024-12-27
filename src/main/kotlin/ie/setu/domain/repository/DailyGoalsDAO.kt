@@ -13,20 +13,20 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 
 class DailyGoalsDAO {
 
-   fun addDailyGoals ( dailyGoals : DailyGoal) {
-       transaction {
+   fun addDailyGoals ( dailyGoals : DailyGoal):Int {
+    return transaction {
            DailyGoals.insert {
                it[userId] = dailyGoals.userId
-               it[ goalName] = dailyGoals. goalName
+               it[goalName] = dailyGoals. goalName
                it[goalDescription] = dailyGoals.goalDescription
                it[isCompleted] = dailyGoals.isCompleted
                it[priority] = dailyGoals.priority
                it[ createdAt] = dailyGoals.createdAt
                it[date] = dailyGoals.date
                it[notes ] = dailyGoals.notes
-           }
+           } get DailyGoals.id
 
-       }
+    }
 
 
    }

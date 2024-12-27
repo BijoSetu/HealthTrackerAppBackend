@@ -13,6 +13,7 @@
 
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto">
+<!--              nav bar items-->
               <li class="nav-item">
                 <a class="nav-link text-white" href="/daily-goals-overview">Daily Goals</a>
               </li>
@@ -74,8 +75,10 @@ app.component("app-layout", {
   },
   methods: {
     logout() {
-
+      // remove the stored user id as the user is logging out
       localStorage.removeItem('userId');
+      // remove the stored user name  as the user is logging out
+      localStorage.removeItem('userName');
       // Redirect to login page
       window.location.href = '/';
 
@@ -104,7 +107,7 @@ app.component("app-layout", {
   display: flex;
   align-items: center;
 }
-
+/* Profile image styling */
 .profile-image {
   width: 32px;
   height: 32px;

@@ -33,21 +33,21 @@ class JavalinConfig{
         app.get("/api/users/email/{email}", UserController::getUserByEmail)
         app.post("/api/users/signup", UserController::registerNewUser)
         app.delete("/api/users/{id}", UserController::deleteUser)
-        app.put("/api/users/{userId}",UserController::updateUser)
+        app.patch("/api/users/{userId}",UserController::updateUser)
 
         //        daily-goals-apis-for-creating-daily-goals
 
         app.post("/api/users/{userId}/daily-goals", DailyGoalsController::addDailyGoalsToUser)
         app.get("/api/users/{userId}/daily-goals",DailyGoalsController:: getAllDailyGoalsByUserId)
         app.delete("/api/users/{userId}/daily-goals/{goalId}", DailyGoalsController::deleteDailyGoalsFromUser)
-        app.put("/api/users/{userId}/daily-goals/{goalId}",DailyGoalsController::updateDailyGoalsForUser)
+        app.patch("/api/users/{userId}/daily-goals/{goalId}",DailyGoalsController::updateDailyGoalsForUser)
 
         //        daily-habits-apis-for-creating-daily-habits
 
          app.post("/api/users/{userId}/daily-habits", DailyHabitsController::addDailyHabitsToUser)
          app.delete("/api/users/{userId}/daily-habits/{id}", DailyHabitsController::deleteDailyHabitLog)
          app.get("/api/users/{userId}/daily-habits", DailyHabitsController::getAllDailyHabit)
-        app.put("/api/users/{userId}/daily-habits/{id}", DailyHabitsController::updateDailyHabit)
+        app.patch("/api/users/{userId}/daily-habits/{id}", DailyHabitsController::updateDailyHabit)
 
         //        lifestyle-suggest-api-to-suggest-user-habitSuggestions
 
@@ -57,11 +57,11 @@ class JavalinConfig{
         //    health-milestones-apis-to-track-user-milestones
 
         app.post("/api/users/{userId}/milestones", MileStonesController::addMileStonesToUser)
-        app.put("/api/users/{userId}/milestones/{id}", MileStonesController::updateMileStoneOfUser)
+        app.patch("/api/users/{userId}/milestones/{id}", MileStonesController::updateMileStoneOfUser)
         app.delete("/api/users/{userId}/milestones/{id}", MileStonesController::deleteMileStoneOfUser)
         app.get("/api/users/{userId}/milestones", MileStonesController::getAllMilesStonesOfUser)
 
-//        vue endpoint
+//        vue endpoints for frontend - page starts with login page
         app.get("/", VueComponent("<login-or-signup></login-or-signup>"))
         app.get("/homepage", VueComponent("<home-page></home-page>"))
         app.get("/users", VueComponent("<user-overview></user-overview>"))

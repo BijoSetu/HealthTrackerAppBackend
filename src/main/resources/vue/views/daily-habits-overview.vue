@@ -4,6 +4,7 @@
       <div class="container mt-4">
         <h3 class="text-left mb-4">Daily Habits List</h3>
 
+        <!--      if the loading is true it will show a lottie loading animation, for ux-->
 
         <div v-if="loading" class="d-flex justify-content-center">
           <dotlottie-player
@@ -22,6 +23,7 @@
               <div class="card-header bg-secondary text-white">
                 <h5 class="card-title">Habit ID: {{ dailyHabit.id }}</h5>
               </div>
+<!--              this will show the dailyhabits in a card according to each date-->
               <div class="card-body">
                 <p><strong>Date:</strong> {{new Date(dailyHabit.date).toLocaleDateString() }}</p>
                 <p><strong>Sleep Time:</strong> {{ dailyHabit.hoursSlept }} hours</p>
@@ -36,6 +38,7 @@
                 <p><strong>Caffeine Intake:</strong> {{ dailyHabit.caffeineIntakeMg }} mg</p>
                 <p><strong>Alcohol Intake:</strong> {{ dailyHabit.alcoholIntakeMl }} mL</p>
               </div>
+<!--              card footer shows the created date-->
               <div class="card-footer text-muted">
                 <small>Data updated on: {{ new Date(dailyHabit.date).toLocaleDateString() }}</small>
               </div>
@@ -56,19 +59,25 @@ app.component("daily-habits-overview", {
     loading: true
   }),
   created() {
+    // set loading to true before making the api call
+    this.loading = true;
+    // get the user id from the local storage
     const userId = localStorage.getItem('userId');
     console.log('Retrieved User ID:', userId);
     console.log("Component created, fetching daily habits...");
-    this.loading = true;
+
     axios.get(`/api/users/${userId}/daily-habits`)
         .then(res => {
-          console.log("Response received:", res); // Log the response object
+          // logging the response
+          console.log("Response received:", res);
           this.dailyHabits = res.data;
-          console.log("Daily habits data:", this.dailyHabits); // Log the daily habits data
+          // logging the dailyhabits list
+          console.log("Daily habits data:", this.dailyHabits);
           this.loading=false;
         })
         .catch(error => {
-          console.error("Error while fetching activities:", error); // Log the error if fetching fails
+          // logging error
+          console.error("Error while fetching activities:", error);
           alert("Error while fetching activities");
         });
   }
@@ -77,10 +86,9 @@ app.component("daily-habits-overview", {
 
 <style>
 .daily-habits-container {
-  /* Ensure the container takes up full available space */
   height: 100%;
   width: 100%;
-  overflow-y: auto; /* Enables scrolling if content exceeds container height */
+  overflow-y: auto;
   padding: 10px;
   box-sizing: border-box;
 }
@@ -95,7 +103,7 @@ li {
   margin-bottom: 20px;
 }
 .card {
-  border-radius: 10px;  /* Rounded corners */
+  border-radius: 10px;
 }
 .card-header {
   background-color: #717171;

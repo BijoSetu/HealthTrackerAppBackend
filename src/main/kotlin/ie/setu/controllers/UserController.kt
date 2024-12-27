@@ -5,6 +5,7 @@ import io.javalin.http.Context
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import ie.setu.domain.PayloadLogin
+import ie.setu.domain.PayloadUpdate
 import ie.setu.domain.User
 import java.sql.SQLException
 
@@ -62,7 +63,7 @@ object UserController {
             try {
                 val user = userDao.getUserById(ctx.pathParam("userId").toInt())
                 if (user != null) {
-                    ctx.status(200).json(mapOf("success" to true, "user" to user))
+                    ctx.status(200).json(user)
                 } else {
                     ctx.status(404).json(mapOf("error" to "User not found"))
                 }
@@ -79,8 +80,10 @@ object UserController {
 
             try {
                 val mapper = jacksonObjectMapper()
-                val user = mapper.readValue<User>(ctx.body())
-                if( userDao.registerNewUser(user)){
+                val user:User = mapper.readValue<User>(ctx.body())
+                val userId = userDao.registerNewUser(user)
+                if( userId!= null){
+                    user.userid = userId
                     ctx.json(user)
                     ctx.status(201)
                 }else{
@@ -121,6 +124,7 @@ object UserController {
             }
 
         }
+//    get a user by their email address
     fun getUserByEmail(ctx: Context) {
         try {
             val email = ctx.pathParam("email")
@@ -141,13 +145,13 @@ object UserController {
             ctx.status(500).json(mapOf("error" to e.message.toString()))
         }
     }
-//update a user
+//update a user , update option are available for name and email
         fun updateUser(ctx: Context) {
 
             try {
                 val userId = ctx.pathParam("userId").toIntOrNull()
                 val mapper = jacksonObjectMapper()
-                val user = mapper.readValue<PayloadLogin>(ctx.body())
+                val user = mapper.readValue<PayloadUpdate>(ctx.body())
 
                 if (userId == null) {
                     ctx.status(400).json(mapOf("error" to "Invalid user id"))

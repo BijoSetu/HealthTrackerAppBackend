@@ -62,9 +62,9 @@ class DailyGoalsDaoTest {
                 val dailyGoals = populateDailyGoalsTable()
 
                 assertEquals(3,dailyGoals.getAllDailyGoalsByUserId(1).size)
-                Assertions.assertEquals(dailyGoals1, dailyGoals.getAllDailyGoalsByUserId(dailyGoals1.userId)[0])
-                Assertions.assertEquals(dailyGoals2, dailyGoals.getAllDailyGoalsByUserId(dailyGoals1.userId)[1])
-                Assertions.assertEquals(dailyGoals3, dailyGoals.getAllDailyGoalsByUserId(dailyGoals1.userId)[2])  }
+                Assertions.assertEquals(dailyGoals1.goalName, dailyGoals.getAllDailyGoalsByUserId(dailyGoals1.userId)[0].goalName)
+                Assertions.assertEquals(dailyGoals2.goalName, dailyGoals.getAllDailyGoalsByUserId(dailyGoals1.userId)[1].goalName)
+                Assertions.assertEquals(dailyGoals3.goalName, dailyGoals.getAllDailyGoalsByUserId(dailyGoals1.userId)[2].goalName)  }
 
 
         }
@@ -116,7 +116,7 @@ class DailyGoalsDaoTest {
              populateUserTable()
     val dailyGoals = populateDailyGoalsTable()
     val dailyGoalChanges = dailyGoals1.copy(priority = 1, isCompleted = true)
-    val updatedRows = dailyGoals.updateDailyGoal(dailyGoals1.id, dailyGoals1.userId, dailyGoalChanges)
+    val updatedRows = dailyGoals.updateDailyGoal(dailyGoals1.id!!, dailyGoals1.userId, dailyGoalChanges)
     val updatedGoal = dailyGoals.getAllDailyGoalsByUserId(dailyGoals1.userId).first { it.id == dailyGoals1.id }
     assertEquals(1, updatedRows)
     assertEquals(1, updatedGoal.priority)
@@ -149,7 +149,7 @@ class DailyGoalsDaoTest {
                 populateUserTable()
               val dailyGoalsDao =   populateDailyGoalsTable()
 
-                val rowsDeleted = dailyGoalsDao.deleteDailyGoal(dailyGoals1.id, dailyGoals1.userId)
+                val rowsDeleted = dailyGoalsDao.deleteDailyGoal(dailyGoals1.id!!, dailyGoals1.userId)
 
                 assertEquals(1, rowsDeleted)
                 val retrievedGoals = dailyGoalsDao.getAllDailyGoalsByUserId(dailyGoals1.userId)

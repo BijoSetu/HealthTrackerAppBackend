@@ -1,5 +1,6 @@
 <template id="user-profile">
   <app-layout>
+    <!--      if the loading is true it will show a lottie loading animation, for ux-->
 
     <div v-if="loading" class="d-flex justify-content-center">
       <dotlottie-player
@@ -39,12 +40,7 @@
             </div>
             <input type="email" class="form-control" v-model="user.email" name="email" placeholder="Email"/>
           </div>
-          <div class="input-group mb-3">
-            <div class="input-group-prepend">
-              <span class="input-group-text" id="input-user-email">Email</span>
-            </div>
-            <input type="email" class="form-control" v-model="user.password" name="password" placeholder="Password"/>
-          </div>
+
         </form>
 
       </div>
@@ -61,26 +57,27 @@ app.component("user-profile", {
     loading:true
   }),
   created: function () {
+    // get the user id from local storage
     const userId = localStorage.getItem('userId');
     console.log('Retrieved User ID:', userId);
     const url = `/api/users/id/${userId}`
     axios.get(url)
         .then(res => {
-          this.user = res.data.user;
+          this.user = res.data;
           this.loading=false
         })
         .catch(() => alert("Error while fetching user" + userId));
     console.log(this.user)
   },
   methods: {
+    // update the users name or email
     updateUser: function () {
-      // const userId = this.$javalin.pathParams["user-id"];
-      const url = `/api/users/1`
+      const userId = localStorage.getItem('userId');
+      const url = `/api/users/${userId}`
       axios.put(url,
           {
          name:this.user.name,
             email: this.user.email,
-            password:this.user.password
 
           })
           .then(response =>
