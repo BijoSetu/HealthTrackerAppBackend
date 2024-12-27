@@ -15,9 +15,9 @@ import org.junit.jupiter.api.Test
 
 
 val mileStone1 = mileStoneFixtures[0]
-val mileStone2 = mileStoneFixtures[0]
-val mileStone3 = mileStoneFixtures[0]
-val mileStone4 = mileStoneFixtures[0]
+val mileStone2 = mileStoneFixtures[1]
+val mileStone3 = mileStoneFixtures[2]
+val mileStone4 = mileStoneFixtures[3]
 class mileStoneDaoTest {
 
     companion object{
@@ -123,11 +123,44 @@ class mileStoneDaoTest {
                 populateUserTable()
                 val mileStoneDao = populateMileStoneTable()
                 val userId =45
-                val updatedMileStones = mileStoneDao.updateMilestone(id=1 , userId=userId, mileStone1.copy(notes = "milestone updated"))
+                val updatedMileStones = mileStoneDao.updateMilestone(id=1 , userid=userId, mileStone1.copy(notes = "milestone updated"))
                 val totalLists = mileStoneDao.getMilestonesByUserId(userId)
                 assertEquals(0,totalLists.size)
                 assertEquals("Achieved this milestone in 10 days of consistent walking.", mileStone1.notes)
             }
         }
+    }
+
+    @Nested
+    inner class DeleteMilestones{
+        @Test
+        fun `deleting milestones for an existing user returns deleted rows`(){
+
+            transaction {
+                populateUserTable()
+                val mileStoneDao = populateMileStoneTable()
+
+                val deletedMilesStones = mileStoneDao.deleteMilestone(mileStone1.userId, mileStone1.id)
+                assertNotEquals(0,deletedMilesStones)
+                val milestoneList = mileStoneDao.getMilestonesByUserId(1)
+                val milestoneIds = milestoneList.map { it.id }
+                assertFalse(milestoneIds.contains(mileStone1.id))
+            }
+        }
+
+        @Test
+       fun  `deleting milestone for a non-existing user returns error`(){
+
+           transaction {
+               populateUserTable()
+               val mileStoneDao = populateMileStoneTable()
+                val userId= 45
+               val deletedMilesStones = mileStoneDao.deleteMilestone(userId, 1)
+               assertEquals(0,deletedMilesStones)
+               val milestoneList = mileStoneDao.getMilestonesByUserId(45)
+               val milestoneIds = milestoneList.map { it.id }
+               assertFalse(milestoneIds.contains(mileStone1.id))
+           }
+       }
     }
 }

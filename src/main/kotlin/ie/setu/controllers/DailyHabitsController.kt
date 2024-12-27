@@ -5,6 +5,7 @@ import ie.setu.controllers.controllerComponents.validateUserId
 import ie.setu.controllers.controllerComponents.validateUserIdAndId
 import ie.setu.domain.DailyHabit
 import ie.setu.domain.repository.DailyHabitsDAO
+import ie.setu.utils.jsonToObject
 import io.javalin.http.Context
 import java.sql.SQLException
 
@@ -14,12 +15,13 @@ object DailyHabitsController {
     fun addDailyHabitsToUser(ctx: Context) {
 
         try {
-            val mapper = jacksonObjectMapper()
+
             val  userId = ctx.pathParam("userId").toIntOrNull()
             val dailyHabitsDao = DailyHabitsDAO()
 
             if(!validateUserId(ctx,userId ))return
-            val dailyHabit = mapper.readValue<DailyHabit>(ctx.body()).copy(userId = userId!!)
+            //            retrieve daily habit from request body and copy the path parameter user id to the object
+            val dailyHabit = jsonToObject<DailyHabit>(ctx.body()).copy(userId = userId!!)
             dailyHabitsDao.addDailyHabits(dailyHabit)
             ctx.status(200).json(mapOf("success" to "true" , "message" to "daily Habit added"))
         }
@@ -75,9 +77,9 @@ try {
     val id = ctx.pathParam("id").toIntOrNull()
 
     if (!validateUserId(ctx,userId)) return
-    val mapper = jacksonObjectMapper()
+
     val dailyHabitDao = DailyHabitsDAO()
-    val updatedDailyHabit = mapper.readValue<DailyHabit>(ctx.body()).copy(userId = userId!!, id = id!!)
+    val updatedDailyHabit = jsonToObject<DailyHabit>(ctx.body()).copy(userId = userId!!, id = id!!)
 
     val updatedHabit = dailyHabitDao.updateDailyHabit(id,userId,updatedDailyHabit)
     if (updatedHabit == 1) {

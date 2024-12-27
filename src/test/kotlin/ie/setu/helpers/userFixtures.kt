@@ -9,7 +9,7 @@ import ie.setu.domain.User
 
 val nonExistingEmail = "112233445566778testUser@xxxxx.xx"
 val validName = "Test User 1"
-val validEmail = "testuser1@test.com"
+val validEmail = "testuser@test.com"
 val validPassword = "password@123"
 val users = arrayListOf<User>(
     User(name = "Alice Wonderland", email = "alice@wonderland.com", userid = 1, password = "password@123"),

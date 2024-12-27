@@ -1,6 +1,5 @@
 package ie.setu.domain
 
-import com.fasterxml.jackson.annotation.JsonProperty
 import org.joda.time.DateTime
 
 data class Milestone(

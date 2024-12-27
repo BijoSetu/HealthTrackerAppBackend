@@ -4,6 +4,7 @@
 
       <h3>DailyGoals list </h3>
 
+<!--      if the loading is true it will show a lottie loading animation, for ux-->
       <div v-if="loading" class="d-flex justify-content-center">
         <dotlottie-player
             src="https://lottie.host/87024446-999a-4516-ab14-42e439110b20/uyuoHWJO8A.lottie"
@@ -17,6 +18,7 @@
 
       <div class="row">
 
+<!--        iterating through the dailygoals list-->
         <div class="col-md-4" v-for="dailygoal in dailygoals" :key="dailygoal.id">
 
           <div class="card mb-4">
@@ -50,9 +52,10 @@ app.component("daily-goals-overview", {
   }),
   created() {
     // Set loading to true before making the API call
+    this.loading = true;
+    // get the user id from local storage
     const userId = localStorage.getItem('userId');
     console.log('Retrieved User ID:', userId);
-    this.loading = true;
     axios.get(`/api/users/${userId}/daily-goals`)
         .then(res => {
           this.dailygoals = res.data;

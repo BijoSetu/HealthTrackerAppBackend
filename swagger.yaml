@@ -1,0 +1,655 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Health Tracker API
+  description: This API provides endpoints for handling CRUD operations on the Health Tracker data.
+  contact:
+    name: Bijo Sabu
+    email: 20110322@mail.wit.ie
+tags:
+  - name: Users
+    description: APIs related to user management
+paths:
+  /api/users/login:
+    post:
+      summary: Login user
+      description: Logs in an existing user.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PayloadLogin'
+      responses:
+        '200':
+          description: Successful login.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+        '400':
+          description: User not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: User not found
+
+  /api/users/signup:
+    post:
+      summary: Register a new user
+      description: Registers a new user to the platform.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: User registered successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+  /api/users/{user-id}:
+    get:
+      summary: Get user by ID
+      description: Retrieves a user by their ID.
+      parameters:
+        - name: user-id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found.
+    delete:
+      summary: Delete user by ID
+      description: Deletes a user by their ID.
+      parameters:
+        - name: user-id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User deleted successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+        '400':
+          description: User not found or invalid ID.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: User not found
+    put:
+      summary: Update user by ID
+      description: Updates user information by their ID.
+      parameters:
+        - name: user-id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PayloadLogin'
+      responses:
+        '200':
+          description: User updated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+        '400':
+          description: Invalid user ID or user not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid user ID
+
+  /api/users:
+    get:
+      summary: Get all users
+      description: Retrieves all registered users.
+      responses:
+        '200':
+          description: List of all users.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+
+  /api/users/{user-id}/daily-goals:
+    post:
+      summary: Add daily goals for a user
+      description: Adds a daily goal to the specified user.
+      parameters:
+        - name: user-id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The ID of the user to add daily goals to.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DailyGoal'
+      responses:
+        '200':
+          description: Daily goal added successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: string
+                    example: "true"
+                  message:
+                    type: string
+                    example: "daily goal added"
+        '400':
+          description: Invalid user ID.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid user id"
+
+    get:
+      summary: Get all daily goals for a user
+      description: Retrieves all daily goals for the specified user.
+      parameters:
+        - name: user-id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The ID of the user whose daily goals are to be retrieved.
+      responses:
+        '200':
+          description: List of all daily goals for the user.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DailyGoal'
+        '400':
+          description: Invalid user ID.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid user id"
+
+  /api/users/{user-id}/daily-goals/{goal-id}:
+    delete:
+      summary: Delete a daily goal for a user
+      description: Deletes a daily goal for the specified user by goal ID.
+      parameters:
+        - name: user-id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The ID of the user.
+        - name: goal-id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The ID of the goal to delete.
+      responses:
+        '200':
+          description: Daily goal deleted successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: string
+                    example: "true"
+                  message:
+                    type: string
+                    example: "Daily goal is deleted"
+        '400':
+          description: Invalid user or goal ID.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid user id or goal id"
+        '404':
+          description: Daily goal not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Daily goal does not exist"
+
+    put:
+      summary: Update a daily goal for a user
+      description: Updates a specific daily goal for the user.
+      parameters:
+        - name: user-id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The ID of the user.
+        - name: goal-id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The ID of the goal to update.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DailyGoal'
+      responses:
+        '200':
+          description: Daily goal updated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: string
+                    example: "true"
+                  message:
+                    type: string
+                    example: "Daily goal updated"
+        '400':
+          description: Invalid user or goal ID.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid user-id or id of the goal"
+        '404':
+          description: Daily goal not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Daily goal not found"
+
+  /api/users/{user-id}/daily-habits:
+    post:
+      summary: Add daily habits for a user
+      description: Adds a daily habit to the specified user.
+      parameters:
+        - name: user-id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The ID of the user to add daily habits to.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DailyHabit'
+      responses:
+        '200':
+          description: Daily habit added successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: string
+                    example: "true"
+                  message:
+                    type: string
+                    example: "daily Habit added"
+        '400':
+          description: Invalid user ID.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid user id"
+
+    get:
+      summary: Get all daily habits for a user
+      description: Retrieves all daily habits for the specified user.
+      parameters:
+        - name: user-id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The ID of the user whose daily habits are to be retrieved.
+      responses:
+        '200':
+          description: List of all daily habits for the user.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DailyHabit'
+        '400':
+          description: Invalid user ID.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid user id"
+
+  /api/users/{user-id}/daily-habits/{id}:
+    delete:
+      summary: Delete a daily habit for a user
+      description: Deletes a daily habit for the specified user by habit ID.
+      parameters:
+        - name: user-id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The ID of the user.
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The ID of the habit to delete.
+      responses:
+        '200':
+          description: Daily habit log deleted successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: string
+                    example: "true"
+                  message:
+                    type: string
+                    example: "Daily Habit log is deleted"
+        '400':
+          description: Invalid user or habit ID.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid user id"
+        '404':
+          description: Daily habit not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Daily Habit does not exist"
+
+    put:
+      summary: Update a daily habit for a user
+      description: Updates a specific daily habit for the user.
+      parameters:
+        - name: user-id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The ID of the user.
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The ID of the habit to update.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DailyHabit'
+      responses:
+        '200':
+          description: Daily habit updated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: string
+                    example: "true"
+                  message:
+                    type: string
+                    example: "Daily goal updated"
+        '400':
+          description: Invalid user or habit ID.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid user id"
+        '404':
+          description: Daily habit not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Daily goal not found"
+  /api/users/{user-id}/life-style-suggestion:
+    get:
+      summary: Generate lifestyle suggestions
+      description: Provides personalized lifestyle suggestions based on a user's recorded habits.
+      parameters:
+        - name: user-id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The ID of the user for whom lifestyle suggestions are to be generated.
+      responses:
+        '200':
+          description: Lifestyle suggestions generated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  suggestions:
+                    type: array
+                    items:
+                      type: string
+                      example: "You should get more sleep (less than 6 hours on average per day)."
+        '400':
+          description: Invalid user ID.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid user id"
+        '404':
+          description: Not enough data to provide suggestions.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  suggestions:
+                    type: array
+                    items:
+                      type: string
+                      example: "Not enough data to provide suggestions. Please record more habits for at least a week."
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+      required:
+        - name
+        - email
+        - password
+
+    PayloadLogin:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required:
+        - email
+        - password
+
+    DailyGoal:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        userId:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: "Morning Walk"
+        description:
+          type: string
+          example: "Walk for 30 minutes in the morning."
+        date:
+          type: string
+          format: date-time
+          example: "2024-11-15T07:00:00Z"
+        isCompleted:
+          type: boolean
+          example: false
+
+    DailyHabit:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        userId:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Meditation"
+        description:
+          type: string
+          example: "Meditate for 10 minutes daily."
+        startDate:
+          type: string
+          format: date
+          example: "2024-11-15"
+        isCompleted:
+          type: boolean
+          example: false
+
+    LifestyleSuggestions:
+      type: object
+      properties:
+        suggestions:
+          type: array
+          items:
+            type: string
+            example: "You should get more sleep (less than 6 hours on average per day)."

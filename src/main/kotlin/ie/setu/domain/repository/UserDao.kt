@@ -1,5 +1,6 @@
 package ie.setu.domain.repository
 import ie.setu.domain.PayloadLogin
+import ie.setu.domain.PayloadUpdate
 import ie.setu.domain.db.Users
 import ie.setu.domain.User
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -12,18 +13,18 @@ import java.sql.SQLException
 class UserDao{
 
 //    Create a new user if not already exists
-fun registerNewUser(user: User): Boolean {
+fun registerNewUser(user: User): Int? {
     return transaction {
         val existingUser = Users.selectAll().where { Users.email eq user.email }.singleOrNull()
         if (existingUser != null) {
-            false
+              null
         } else {
             Users.insert {
                 it[name] = user.name
                 it[email] = user.email
                 it[password] = user.password
-            }
-            true
+            } [Users.userId]
+
         }
     }
 }
@@ -99,13 +100,12 @@ fun registerNewUser(user: User): Boolean {
     }}
 
 //update option for user to update the name ,email and password
-         fun updateUser(id: Int, user:PayloadLogin):Int{
+         fun updateUser(id: Int, user: PayloadUpdate):Int{
             return  transaction {
                  Users.update ({
                      Users.userId eq id}) {
-                    it[name]=user.name!!
+                    it[name]=user.name
                      it[email] = user.email
-                     it[password] = user.password
                  }
              }
          }

@@ -9,7 +9,7 @@
           Welcome, {{ userName }}!</h1>
       </div>
 
-      <!-- Split Section -->
+      <!-- First container section -->
       <div class="split-section" style="display: flex; flex: 1 1 auto;">
         <!-- Daily Goals -->
         <dotlottie-player src="https://lottie.host/aa1fd7bb-a610-46a7-b61c-410a7b597635/rpSgatxs1L.lottie" background="transparent" speed="1" style="width: 100px; height: 200px" loop autoplay></dotlottie-player>
@@ -33,7 +33,7 @@
     </div>
 
 
-    <!-- Bottom Section: Split into BMI and Daily Habits -->
+    <!-- Bottom Section: split into BMI and daily habits -->
     <div class="main-container" style="background-color: #F5F7FA; height: 50vh; width: 100vw; display: flex; flex-direction: row; padding: 20px;">
       <!-- Left Side: BMI Calculator -->
       <div class="bmi-calculator" style="flex: 1; margin-right: 10px; background-color: #FFF; padding: 20px; border-radius: 8px; display: flex; flex-direction: column; align-items: center;">
@@ -41,7 +41,7 @@
           <i class="fas fa-weight" style="margin-right: 10px;"></i>
           BMI Calculator</h2>
 
-        <!-- Input Fields -->
+        <!-- Input Fields for taking the height and weight from the user , using the v-model -->
         <div style="display: flex; flex-direction: column; align-items: center;">
           <label for="weight" style="font-size: 1rem; color: #3C4858; margin-bottom: 10px;">Enter your weight (kg):</label>
           <input v-model="weight" id="weight" type="number" placeholder="Weight in kg" style="padding: 10px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #ccc; width: 200px;"/>
@@ -53,7 +53,7 @@
           <button @click="calculateBMI()" style="background-color: #81C784; border-color: #81C784; padding: 10px 20px; border-radius: 8px; color: white; font-size: 1rem;">Calculate BMI</button>
         </div>
 
-        <!-- BMI Result Display -->
+        <!-- Displaying the bmi result -->
         <div v-if="bmi !== null" id="bmiResult" style="margin-top: 20px; font-size: 1.5rem; color: #3C4858; font-weight: bold;">
           <h2 style="font-size: 2rem; color: #3C4858; margin-bottom: 20px;">
             Your BMI is {{bmi}}
@@ -96,8 +96,11 @@ app.component('home-page',
         userName:null
       }),
       created() {
+        // getting the username , to show at the welcome heading
         this.userName = localStorage.getItem('userName');
+        // getting userid from the local storage
         const userId = localStorage.getItem('userId');
+        // logging the user id for debugging
         console.log('Retrieved User ID:', userId);
         axios.get(`/api/users/${userId}/milestones`)
             .then(res => {
@@ -123,9 +126,9 @@ app.component('home-page',
         calculateBMI() {
           // Ensure weight and height are provided
           if (this.weight !== null  && this.height !== null) {
-            // Convert height to meters
+            // converting height to meters
             const heightInMeters = this.height / 100;
-            // Calculate BMI
+            // Calculate the bmi
             const bmi = this.weight / (heightInMeters * heightInMeters);
             // Set the calculated BMI value
             this.bmi = bmi.toFixed(2);
