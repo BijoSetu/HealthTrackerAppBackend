@@ -5,7 +5,7 @@ import org.jetbrains.exposed.sql.jodatime.datetime
 import org.joda.time.DateTime
 
 
-object DailyHabits : Table("dailyhabittracker") {
+object DailyHabits : Table("dailyhabits") {
         val id = integer("id").autoIncrement()
         val userId = integer("userid").references(Users.userId)
         val date = datetime("date").nullable()

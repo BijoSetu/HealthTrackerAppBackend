@@ -56,19 +56,21 @@ class JavalinConfig{
 
         //    health-milestones-apis-to-track-user-milestones
 
-        app.post("/api/users/{user-id}/milestones", MileStonesController::addMileStonesToUser)
-        app.put("/api/users/{user-id}/milestones/{id}", MileStonesController::updateMileStoneOfUser)
-        app.delete("/api/users/{user-id}/milestones/{id}", MileStonesController::deleteMileStoneOfUser)
-        app.get("/api/users/{user-id}/milestones", MileStonesController::getAllMilesStonesOfUser)
+        app.post("/api/users/{userId}/milestones", MileStonesController::addMileStonesToUser)
+        app.put("/api/users/{userId}/milestones/{id}", MileStonesController::updateMileStoneOfUser)
+        app.delete("/api/users/{userId}/milestones/{id}", MileStonesController::deleteMileStoneOfUser)
+        app.get("/api/users/{userId}/milestones", MileStonesController::getAllMilesStonesOfUser)
 
 //        vue endpoint
-        app.get("/", VueComponent("<home-page></home-page>"))
+        app.get("/", VueComponent("<login-or-signup></login-or-signup>"))
+        app.get("/homepage", VueComponent("<home-page></home-page>"))
         app.get("/users", VueComponent("<user-overview></user-overview>"))
-        app.get("/users/{userId}", VueComponent("<user-profile></user-profile>"))
-        app.get("/users/{userId}/daily-goals", VueComponent("<user-daily-goals-overview></user-daily-goals-overview>"))
-        app.get("/login-or-signup", VueComponent("<login-or-signup></login-or-signup>"))
-
-
+        app.get("/user-profile", VueComponent("<user-profile></user-profile>"))
+        app.get("/users/{userId}/daily-goals", VueComponent("<daily-goals-overview></daily-goals-overview>"))
+        app.get("/daily-goals-overview", VueComponent("<daily-goals-overview></daily-goals-overview>"))
+        app.get("/milestones-overview", VueComponent("<milestones-overview></milestones-overview>"))
+        app.get("/daily-habits-overview", VueComponent("<daily-habits-overview></daily-habits-overview>"))
+        app.get("/lifestyle-suggestion", VueComponent("<lifestyle-suggestion></lifestyle-suggestion>"))
 
     }
 
@@ -76,6 +78,6 @@ class JavalinConfig{
         val remotePort = System.getenv("PORT")
         return if (remotePort != null) {
             Integer.parseInt(remotePort)
-        } else 7000
+        } else 7003
     }
 }
