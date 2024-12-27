@@ -10,6 +10,10 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import java.sql.SQLException
 
+
+/**
+ * Manages the database transactions and returns the results of the transactions
+ */
 class UserDao{
 
 //    Create a new user if not already exists
