@@ -2,6 +2,7 @@ package ie.setu.controllers.controllerComponents
 
 import io.javalin.http.Context
 
+//check to see if user id is null or not before doing api calls
 public fun validateUserId(ctx:Context,userId:Int?):Boolean{
 
     if (userId == null) {
@@ -12,6 +13,7 @@ public fun validateUserId(ctx:Context,userId:Int?):Boolean{
 return true
 }
 
+//check to see if userid and id of the object being passed is null or not before doing api calls
 public fun validateUserIdAndId(ctx:Context,userId:Int?,id:Int?):Boolean{
 
     if (userId == null || id == null) {
@@ -23,6 +25,7 @@ public fun validateUserIdAndId(ctx:Context,userId:Int?,id:Int?):Boolean{
 
 }
 
+//send the appropriate response upon api call returns
 public fun sendResponse(ctx: Context, successCondition: Any, successOn: String, errorOn: String) {
     when (successCondition) {
         is Boolean -> {

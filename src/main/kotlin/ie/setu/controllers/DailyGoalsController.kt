@@ -11,6 +11,8 @@ import ie.setu.domain.User
 import ie.setu.domain.db.DailyGoals
 import ie.setu.domain.repository.DailyGoalsDAO
 import ie.setu.domain.repository.UserDao
+import ie.setu.utils.jsonNodeToObject
+import ie.setu.utils.jsonToObject
 import io.javalin.http.Context
 import java.sql.SQLException
 
@@ -22,13 +24,14 @@ private val dailyGoalsDao = DailyGoalsDAO()
     fun addDailyGoalsToUser(ctx: Context) {
 
         try {
-            val mapper = jacksonObjectMapper()
-            var  userId = ctx.pathParam("userId").toIntOrNull()
+            val userId = ctx.pathParam("userId").toIntOrNull()
 
             if(!validateUserId(ctx, userId))return
-            val dailyGoals = mapper.readValue<DailyGoal>(ctx.body()).copy(userId = userId!!)
+//            retrieve daily goal from request body and copy the path parameter user id to the object
+            val dailyGoals = jsonToObject<DailyGoal>(ctx.body()).copy(userId = userId!!)
             dailyGoalsDao.addDailyGoals(dailyGoals)
-            ctx.status(200).json(mapOf("success" to "true" , "message" to "daily goal added"))
+              ctx.status(200).json(mapOf("success" to "true" , "message" to "daily goal added"))
+
         }catch(e:SQLException){
             ctx.status(400).json(mapOf("error" to e.message.toString()))
         }catch (e: Exception){
@@ -61,8 +64,11 @@ private val dailyGoalsDao = DailyGoalsDAO()
             val userId = ctx.pathParam("userId").toInt()
 
             val dailyGoals = dailyGoalsDao.getAllDailyGoalsByUserId(userId)
-
-            ctx.json(dailyGoals)
+            if(dailyGoals.isNotEmpty()) {
+                ctx.status(200).json(dailyGoals)
+            }else{
+                ctx.status(404).json(mapOf("error" to "No goals found"))
+            }
         }catch (e: SQLException){
             ctx.status(400).json(mapOf("error" to e.message.toString()))
         }catch (e:Exception){
@@ -75,13 +81,13 @@ private val dailyGoalsDao = DailyGoalsDAO()
 
 
         try {
-            val mapper = jacksonObjectMapper()
+
             val id = ctx.pathParam("goal-id").toIntOrNull()
             val userId = ctx.pathParam("user-id").toIntOrNull()
 
             if(!validateUserIdAndId(ctx, userId, id))return
 
-            val updatedDailyGoal = mapper.readValue<DailyGoal>(ctx.body()).copy(userId = userId!!, id = id!!)
+            val updatedDailyGoal = jsonToObject<DailyGoal>(ctx.body()).copy(userId = userId!!, id = id!!)
 
             val updated = dailyGoalsDao.updateDailyGoal(id,userId,updatedDailyGoal)
             sendResponse(ctx,updated,"updated","updating")

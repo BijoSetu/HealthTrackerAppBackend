@@ -7,6 +7,7 @@ import ie.setu.controllers.controllerComponents.validateUserId
 import ie.setu.controllers.controllerComponents.validateUserIdAndId
 import ie.setu.domain.Milestone
 import ie.setu.domain.repository.MileStonesDAO
+import ie.setu.utils.jsonToObject
 import io.javalin.http.Context
 import org.joda.time.DateTime
 import java.sql.SQLException
@@ -19,13 +20,11 @@ object MileStonesController {
         try {
 
             val mileStoneDao = MileStonesDAO()
-            val mapper = jacksonObjectMapper()
+
             val userId = ctx.pathParam("userId").toIntOrNull()
             if (!validateUserId(ctx, userId))return
-            val requestBody = ctx.body()
-            println("Received JSON: $requestBody")
-            println(DateTime.now())
-            val mileStone = mapper.readValue<Milestone>(ctx.body()).copy(userId = userId!!)
+//            copy the user id to the object from request body
+            val mileStone = jsonToObject<Milestone>(ctx.body()).copy(userId = userId!!)
 
              mileStoneDao.addNewMileStone(mileStone)
             ctx.json(mapOf("success" to "MileStone added"))
@@ -42,13 +41,13 @@ object MileStonesController {
 
         try {
             val mileStoneDao = MileStonesDAO()
-            val mapper = jacksonObjectMapper()
+
             var  userId = ctx.pathParam("userId").toIntOrNull()
             var  id = ctx.pathParam("id").toIntOrNull()
 
            if(!validateUserIdAndId(ctx, userId,id))return
-
-            val updatedDailyObject = mapper.readValue<Milestone>(ctx.body()).copy(id=id!!, userId = userId!!)
+//            copy the id and user id from the path parameter to the object in request body
+            val updatedDailyObject = jsonToObject<Milestone>(ctx.body()).copy(id=id!!, userId = userId!!)
 
             val rowsUpdated = mileStoneDao.updateMilestone(id,userId,updatedDailyObject)
             sendResponse(ctx,rowsUpdated,"updated","updating")
@@ -62,9 +61,8 @@ object MileStonesController {
 //deleting a milestone
     fun deleteMileStoneOfUser(ctx: Context) {
 
-
         try {
-            val mapper = jacksonObjectMapper()
+
             val mileStoneDao = MileStonesDAO()
             var  userId = ctx.pathParam("userId").toIntOrNull()
             val id = ctx.pathParam("id").toIntOrNull()

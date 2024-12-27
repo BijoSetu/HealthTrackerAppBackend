@@ -16,6 +16,7 @@
                   :style="{ backgroundColor: '#81C784', color: 'white' }"
                   @click="toggleForm"
               >
+<!--                toggle between login or signup screen when the button is pressed-->
                 Switch to {{ isLogin ? 'Sign Up' : 'Login' }}
               </button>
             </div>
@@ -103,26 +104,28 @@
 app.component('login-or-signup', {
   template: '#login-or-signup',
   data: () => ({
-    // Form visibility toggle
+    // by default login screen is shown at first
     isLogin: true,
-    // Login form data
+    // data needed for login
     loginEmail: '',
     loginPassword: '',
-    // Sign up form data
+    // data needed for signing up the user
     signupName: '',
     signupEmail: '',
     signupPassword: '',
-    signupError: '', // Store signup error messages
+    // storing the error message
+    signupError: '',
   }),
 
   methods: {
-    // Toggle between login and signup forms
+    // toggle between login and signup pages
     toggleForm() {
       this.isLogin = !this.isLogin;
-      this.signupError = ''; // Reset any signup errors
+      // resetting errors
+      this.signupError = '';
     },
 
-    // Handle login functionality
+    // function for logging in the user
     login() {
       const url = '/api/users/login';
       axios
@@ -132,15 +135,16 @@ app.component('login-or-signup', {
           })
           .then((res) => {
             if (res.data.success && res.data.user) {
-              const userId = res.data.user.userid; // Access the `userid` field directly
+              const userId = res.data.user.userid;
               const userName = res.data.user.name;
               console.log('Retrieved User ID:', userId);
 
               console.log('Login successful', res.data);
+              // store username in local storage to be used on ui. eg welcome message
               localStorage.setItem('userName', userName);
-              // Store user ID (or other relevant data) in localStorage
+              // store the user id to be used during api calls
               localStorage.setItem('userId', userId);
-              // Redirect to homepage on successful login
+              // when login is successful redirect to the homepage
               window.location.href = '/homepage';
             } else {
               alert(res.data.error || 'Login failed! Please check your credentials.');
@@ -154,7 +158,7 @@ app.component('login-or-signup', {
 
     ,
 
-    // Handle signup functionality
+    //  signing in the user
     signup() {
       const url = '/api/users/signup';
       axios
@@ -167,7 +171,8 @@ app.component('login-or-signup', {
             if (response.status === 201) {
               console.log('Signup successful', response.data);
               alert('Signup successful! Please log in.');
-              window.location.href = '/'; // Redirect to the login page
+              // after signing up user has to go to login page again and login using the created creds
+              window.location.href = '/';
             }
           })
           .catch((error) => {

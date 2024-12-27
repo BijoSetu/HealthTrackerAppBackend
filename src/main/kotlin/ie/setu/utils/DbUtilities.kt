@@ -19,9 +19,9 @@ fun mapToDailyGoal(it: ResultRow) = DailyGoal(
     userId = it[DailyGoals.userId],
     goalName = it[DailyGoals.goalName],
     goalDescription = it[DailyGoals.goalDescription],
-//    createdAt = it[DailyGoals.createdAt]?:defaultDateTime,
+    createdAt = it[DailyGoals.createdAt],
     isCompleted = it[DailyGoals.isCompleted],
-//    date = it[DailyGoals.date]?: defaultDateTime,
+    date = it[DailyGoals.date],
     priority = it[DailyGoals.priority],
     notes = it[DailyGoals.notes]
 )

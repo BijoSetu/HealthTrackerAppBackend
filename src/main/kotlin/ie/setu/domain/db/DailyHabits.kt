@@ -8,7 +8,7 @@ import org.joda.time.DateTime
 object DailyHabits : Table("dailyhabits") {
         val id = integer("id").autoIncrement()
         val userId = integer("userid").references(Users.userId)
-        val date = datetime("date").nullable()
+        val date = datetime("date")
 
         val hoursSlept = double("hours_slept")
         val stepsWalked = double("steps_walked")
@@ -26,4 +26,6 @@ object DailyHabits : Table("dailyhabits") {
         val alcoholIntakeMl = double("alcohol_intake_ml")
 
         val notes = text("notes").nullable()
+
+        override val primaryKey = PrimaryKey(id, name = "PK_dailyhabits_ID")
     }

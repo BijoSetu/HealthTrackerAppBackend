@@ -1,5 +1,6 @@
 package ie.setu.repository
 import ie.setu.domain.PayloadLogin
+import ie.setu.domain.PayloadUpdate
 import ie.setu.domain.User
 import ie.setu.domain.db.Users
 import ie.setu.domain.repository.UserDao
@@ -10,6 +11,7 @@ import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -53,7 +55,7 @@ class UsersDaoTest {
              val userDao=  populateUserTable()
 
                 assertEquals(3, userDao.getAll().size)
-                assertEquals(false, userDao.registerNewUser(newUserWithExistingEmail))
+                assertEquals(null, userDao.registerNewUser(newUserWithExistingEmail))
             }
         }
 
@@ -85,7 +87,7 @@ fun `logging in a user with an existing and matching email and password returns 
         val userDao=  populateUserTable()
 
         assertEquals(3, userDao.getAll().size)
-        assertEquals(true, userDao.loginUser(loginPayload))
+        assertNotEquals(null,userDao.loginUser(loginPayload))
     }
 }
         @Test
@@ -165,7 +167,7 @@ fun `logging in a user with an existing and matching email and password returns 
                 val userDAO = populateUserTable()
 
                 //Act & Assert
-                val user3Updated = PayloadLogin( email = "bob@gmail.com",password = "bobPassword")
+                val user3Updated = PayloadUpdate( email = "bob@gmail.com", name = "bob")
                 userDAO.updateUser(user3.userid, user3Updated)
                 val updatedUser =  userDAO.getUserById(3)
                 assertEquals( "bob@gmail.com", updatedUser!!.email)
@@ -180,7 +182,7 @@ fun `logging in a user with an existing and matching email and password returns 
                 val userDAO = populateUserTable()
 
                 //Act & Assert
-                val user4Updated = PayloadLogin( email = "bob@gmail.com",password = "bobPassword")
+                val user4Updated = PayloadUpdate( email = "bob@gmail.com",name="bob")
                 userDAO.updateUser(4, user4Updated)
                 assertEquals(null, userDAO.getUserById(4))
                 assertEquals(3, userDAO.getAll().size)

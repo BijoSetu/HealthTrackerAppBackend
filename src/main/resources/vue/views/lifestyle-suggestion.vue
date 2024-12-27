@@ -3,6 +3,8 @@
     <app-layout>
 
       <h3>Lifestyle Suggestion</h3>
+      <!--      if the loading is true it will show a lottie loading animation, for ux-->
+
       <div v-if="loading" class="d-flex justify-content-center">
         <dotlottie-player
             src="https://lottie.host/87024446-999a-4516-ab14-42e439110b20/uyuoHWJO8A.lottie"
@@ -44,7 +46,9 @@ app.component("lifestyle-suggestion",{
     loading:true
   }),
   created() {
+    // getting userid from local storage
     const userId = localStorage.getItem('userId');
+    // logging user id for debugging
     console.log('Retrieved User ID:', userId);
     axios.get(`/api/users/${userId}/life-style-suggestion`)
         .then(res => {
