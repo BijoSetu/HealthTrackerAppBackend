@@ -11,11 +11,15 @@ import java.sql.SQLException
 
 object LifestyleSuggestionController {
 
+//    suggesting a life-style suggestion to the user based on the dailyhabits of the user based upon the
+//    last 7 days' data , for example if the user has slept less than 40 over 7 days the function would recommend  the
+//    user to get better sleep
+
     fun generateLifeStyleSuggestions(ctx: Context) {
 
         try {
-            val mapper = jacksonObjectMapper()
-            var  userId = ctx.pathParam("user-id").toIntOrNull()
+
+            var  userId = ctx.pathParam("userId").toIntOrNull()
             val lifeStyleSuggesterDao = LifestyleSuggestionDAO()
             val suggestions = mutableListOf<String>()
             if (userId == null) {
@@ -30,7 +34,6 @@ object LifestyleSuggestionController {
                 return
 
             }
-
 
             val sumOfHabits = calculateSumOfHabits(allDailyHabits)
             if (sumOfHabits.hoursSlept < 40) {
@@ -49,9 +52,9 @@ object LifestyleSuggestionController {
                 suggestions.add("You should try to reduce your screen time usage (more than 15 hours per week).")
             }
 
-            if (sumOfHabits.stepsWalked < 70000) {
-                suggestions.add("You should get more steps in (avg of less than 7000 steps per day).")
-            }
+//            if (sumOfHabits.stepsWalked < 70000) {
+//                suggestions.add("You should get more steps in (avg of less than 7000 steps per day).")
+//            }
 
             if (sumOfHabits.carbsIntakeG > 2000) {
                 suggestions.add("You should watch your carbs intake (currently your intake is more than 2000 grams weekly).")
@@ -70,9 +73,9 @@ object LifestyleSuggestionController {
             }
 
             ctx.json(mapOf("suggestions" to suggestions))
-        }catch (e: Exception){
-            ctx.status(400).json(mapOf("error" to e.message.toString()))
         }catch (e: SQLException){
+            ctx.status(400).json(mapOf("error" to e.message.toString()))
+        }catch (e: Exception){
 
             ctx.status(400).json(mapOf("error" to e.message.toString()))
         }
@@ -81,6 +84,8 @@ object LifestyleSuggestionController {
 
     }
 }
+
+//calculating the sum of habit values over the period of 7 days
 
 fun calculateSumOfHabits(dailyHabits: List<DailyHabit>): DailyHabit {
     val sumHoursSlept = dailyHabits.sumOf { it.hoursSlept }

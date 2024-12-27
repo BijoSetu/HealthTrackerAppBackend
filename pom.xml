@@ -121,6 +121,31 @@
             <artifactId>exposed-jodatime</artifactId>
             <version>0.55.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.konghq</groupId>
+            <artifactId>unirest-java-core</artifactId>
+            <version>4.4.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.konghq</groupId>
+            <artifactId>unirest-object-mappers-gson</artifactId>
+            <version>4.2.9</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- adding Vue -->
+        <dependency>
+            <groupId>org.webjars.npm</groupId>
+            <artifactId>vue</artifactId>
+            <version>3.5.12</version>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars.npm</groupId>
+            <artifactId>axios</artifactId>
+            <version>1.7.7</version>
+        </dependency>
+
     </dependencies>
 
     <build>

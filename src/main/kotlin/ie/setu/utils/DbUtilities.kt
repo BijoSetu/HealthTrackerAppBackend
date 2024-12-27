@@ -9,7 +9,7 @@ import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 
 fun mapToUser(it: ResultRow) = User(
-    user_id = it[Users.user_id],
+    userid = it[Users.userId],
     name = it[Users.name],
     email = it[Users.email],password = it[Users.password],
 )
@@ -50,7 +50,7 @@ fun mapToMileStones(it: ResultRow) = Milestone(
 
     id= it[MileStones.id],
     userId = it[MileStones.userId],
-    milestone = it[MileStones.milestoneName],
+    milestoneName = it[MileStones.milestoneName],
     notes = it[MileStones.notes],
     created = it[MileStones.createdAt],
     updated = it[MileStones.updatedAt],

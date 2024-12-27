@@ -6,12 +6,12 @@ import org.jetbrains.exposed.sql.jodatime.datetime
 object MileStones : Table("milestones") {
 
         val id = integer("id").autoIncrement()
-        val userId = integer("user_id").references(Users.user_id).index()
-        val milestoneName = varchar("milestone_name", 255)
-        val achievedDate =  datetime("achieved_date").nullable()
+        val userId = integer("userid").references(Users.userId).index()
+        val milestoneName = varchar("milestonename", 255)
+        val achievedDate =  datetime("achieveddate").nullable()
         val notes = varchar("notes", 255).nullable()
-        val createdAt = datetime("created_at").nullable()
-        val updatedAt = datetime("updated_at").nullable()
+        val createdAt = datetime("createdat").nullable()
+        val updatedAt = datetime("updatedat").nullable()
 
 }
 
