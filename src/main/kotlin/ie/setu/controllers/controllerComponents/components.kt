@@ -30,19 +30,19 @@ public fun sendResponse(ctx: Context, successCondition: Any, successOn: String, 
     when (successCondition) {
         is Boolean -> {
              if (successCondition) {
-                ctx.json(mapOf("success" to "Successfully $successOn"))
+                ctx.status(200).json(mapOf("success" to "Successfully $successOn"))
             } else {
-                ctx.json(mapOf("error" to errorOn))
+                 ctx.status(400).json(mapOf("error" to errorOn))
             }
         }
         is Int -> {
              if (successCondition > 0) {
-                ctx.json(mapOf("success" to "Successfully $successOn"))
+                 ctx.status(200).json(mapOf("success" to "Successfully $successOn"))
             } else {
-                ctx.json(mapOf("error" to errorOn))
+                 ctx.status(400).json(mapOf("error" to errorOn))
             }
         }
         else -> {
-             ctx.json(mapOf("error" to "Unexpected success condition"))
+            ctx.status(400).json(mapOf("error" to "Unexpected success condition"))
         }
     }}

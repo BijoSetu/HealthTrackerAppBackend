@@ -17,7 +17,7 @@ import org.junit.jupiter.api.TestInstance
 
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class HealthTrackerControllerTest {
+class UserControllerTest {
 
     private val db = DbConfig().getDbConnection()
     private val app = ServerContainer.instance
@@ -113,7 +113,7 @@ class HealthTrackerControllerTest {
             //Arrange - add the user
             addUser(validName, validEmail,validPassword)
 
-            //Assert - retrieve the added user from the database and verify return code
+            //Assert - retrieve the added user from the database and verify return status
             val retrieveResponse = retrieveUserByEmail(validEmail)
             assertEquals(200, retrieveResponse.status)
 
@@ -128,13 +128,13 @@ class HealthTrackerControllerTest {
     inner class UpdateUsers {
 
         @Test
-        fun `updating a user when it exists, returns a 204 response`() {
+        fun `updating a user when it exists, returns a 200 response`() {
 
-            //Arrange - add the user that we plan to do an update on
+            //Arrange - add the user that will updated later
             val addedResponse = addUser(validName, validEmail,validPassword)
             val addedUser : User = jsonToObject(addedResponse.body.toString())
             exposedLogger.info("this is the addeduser : $addedUser")
-            //Act & Assert - update the email and name of the retrieved user and assert 200 is returned
+            //Act & Assert - update the email and name of the retrieved user and assert 200
             assertEquals(200, updateUser(addedUser.userid, validName, validEmail).status)
             exposedLogger.info("this is the status : ${updateUser(addedUser.userid, validName, validEmail).status}")
             //Act & Assert - retrieve updated user and assert details are correct
@@ -152,7 +152,7 @@ class HealthTrackerControllerTest {
         }
 
         @Test
-        fun `updating a user when it doesn't exist, returns a 404 response`() {
+        fun `updating a user when it doesn't exist, returns a 400 response`() {
 
             //Act & Assert - attempt to update the email and name of user that doesn't exist
             assertEquals(400, updateUser(-1, validName, validEmail,).status)
@@ -171,14 +171,14 @@ class HealthTrackerControllerTest {
         @Test
         fun `deleting a user when it exists, returns a 204 response`() {
 
-            //Arrange - add the user that we plan to do a delete on
+            //Arrange - add the user to delete later on
             val addedResponse = addUser(validName, validEmail,validPassword)
             val addedUser : User = jsonToObject(addedResponse.body.toString())
            exposedLogger.info(addedUser.toString())
-            //Act & Assert - delete the added user and assert a 204 is returned
+            //Act & Assert - delete the added user and assert 200 is the response
             assertEquals(200, deleteUser(addedUser.userid).status)
 
-            //Act & Assert - attempt to retrieve the deleted user --> 404 response
+            //Act & Assert - attempt to retrieve the deleted user will give a  404 response
             assertEquals(404, retrieveUserById(addedUser.userid).status)
         }
     }

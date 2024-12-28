@@ -27,12 +27,12 @@ object MileStonesController {
             val mileStone = jsonToObject<Milestone>(ctx.body()).copy(userId = userId!!)
 
              mileStoneDao.addNewMileStone(mileStone)
-            ctx.json(mapOf("success" to "MileStone added"))
+            ctx.status(200).json(mapOf("success" to "MileStone added"))
         } catch (e: SQLException) {
-            ctx.json(mapOf("SQLError" to e.message.toString()))
+            ctx.status(400).json(mapOf("SQLError" to e.message.toString()))
         }catch (e:Exception){
 
-            ctx.json(mapOf("error" to e.message.toString()))
+            ctx.status(400).json(mapOf("error" to e.message.toString()))
         }
     }
 
@@ -42,19 +42,19 @@ object MileStonesController {
         try {
             val mileStoneDao = MileStonesDAO()
 
-            var  userId = ctx.pathParam("userId").toIntOrNull()
-            var  id = ctx.pathParam("id").toIntOrNull()
+            val userId = ctx.pathParam("userId").toIntOrNull()
+            val id = ctx.pathParam("id").toIntOrNull()
 
            if(!validateUserIdAndId(ctx, userId,id))return
 //            copy the id and user id from the path parameter to the object in request body
             val updatedDailyObject = jsonToObject<Milestone>(ctx.body()).copy(id=id!!, userId = userId!!)
 
             val rowsUpdated = mileStoneDao.updateMilestone(id,userId,updatedDailyObject)
-            sendResponse(ctx,rowsUpdated,"updated","updating")
+            ctx.status(200).json(mapOf("success" to "Successfully updated"))
         }catch (e:SQLException){
-            ctx.json(mapOf("error" to e.message.toString()))
+            ctx.status(400).json(mapOf("error" to e.message.toString()))
         }catch (e:Exception){
-            ctx.json(mapOf("error" to e.message.toString()))
+            ctx.status(400).json(mapOf("error" to e.message.toString()))
         }
 
     }
@@ -64,15 +64,15 @@ object MileStonesController {
         try {
 
             val mileStoneDao = MileStonesDAO()
-            var  userId = ctx.pathParam("userId").toIntOrNull()
+            val userId = ctx.pathParam("userId").toIntOrNull()
             val id = ctx.pathParam("id").toIntOrNull()
            if(!validateUserIdAndId(ctx, userId,id))return
             val deletedRows= mileStoneDao.deleteMilestone(userId!!,id!!)
-            sendResponse(ctx,deletedRows,"deleted","deleting")
+            ctx.status(200).json(mapOf("success" to "MileStoneDeleted"))
         }catch (e:SQLException){
-            ctx.json(mapOf("error" to e.message.toString()))
+            ctx.status(400).json(mapOf("error" to e.message.toString()))
         }catch (e:Exception){
-            ctx.json(mapOf("error" to e.message.toString()))
+            ctx.status(400).json(mapOf("error" to e.message.toString()))
         }
 
     }
@@ -82,20 +82,20 @@ object MileStonesController {
 
 
         try {
-            val mapper = jacksonObjectMapper()
+
             val milestoneDao = MileStonesDAO()
             var  userId = ctx.pathParam("userId").toIntOrNull()
             if(!validateUserId( ctx, userId))return
             val mileStones = milestoneDao.getMilestonesByUserId(userId!!)
          if(mileStones.isNotEmpty()){
-             ctx.json(mapOf("success" to true,"milestones" to mileStones))
+             ctx.status(200).json(mapOf("success" to true,"milestones" to mileStones))
          }else{
-             ctx.json(mapOf("success" to false,"milestones" to "no milestones available"))
+             ctx.status(400).json(mapOf("success" to false,"milestones" to "no milestones available"))
          }
         }catch (e:SQLException){
-            ctx.json(mapOf("error" to e.message.toString()))
+            ctx.status(400).json(mapOf("error" to e.message.toString()))
         }catch (e:Exception){
-            ctx.json(mapOf("error" to e.message.toString()))
+            ctx.status(400).json(mapOf("error" to e.message.toString()))
         }
 
     }

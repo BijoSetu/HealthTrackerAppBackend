@@ -33,7 +33,7 @@ object LifestyleSuggestionController {
 
             if (allDailyHabits.size < 7) {
                 suggestions.add("Not enough data to provide suggestions. Please record more habits for atleast a week.")
-                ctx.json(mapOf("suggestions" to suggestions))
+                ctx.status(400).json(mapOf("error" to "Not enough data","suggestions" to suggestions))
                 return
 
             }
@@ -78,7 +78,7 @@ object LifestyleSuggestionController {
                 suggestions.add("You should exercise more as your weekly time spent on exercise is low.")
             }
 
-            ctx.json(mapOf("suggestions" to suggestions))
+           ctx.status(200).json(mapOf("suggestions" to suggestions))
 
         }catch (e: SQLException){
             ctx.status(400).json(mapOf("error" to e.message.toString()))

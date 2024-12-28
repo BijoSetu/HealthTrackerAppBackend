@@ -29,8 +29,9 @@ private val dailyGoalsDao = DailyGoalsDAO()
             if(!validateUserId(ctx, userId))return
 //            retrieve daily goal from request body and copy the path parameter user id to the object
             val dailyGoals = jsonToObject<DailyGoal>(ctx.body()).copy(userId = userId!!)
-            dailyGoalsDao.addDailyGoals(dailyGoals)
-              ctx.status(200).json(mapOf("success" to "true" , "message" to "daily goal added"))
+            println("this is the added daily goal $dailyGoals")
+          val dailyGoalId=  dailyGoalsDao.addDailyGoals(dailyGoals)
+              ctx.status(200).json(mapOf("success" to "true" ,"id" to dailyGoalId, "message" to "daily goal added"))
 
         }catch(e:SQLException){
             ctx.status(400).json(mapOf("error" to e.message.toString()))
@@ -82,8 +83,8 @@ private val dailyGoalsDao = DailyGoalsDAO()
 
         try {
 
-            val id = ctx.pathParam("goal-id").toIntOrNull()
-            val userId = ctx.pathParam("user-id").toIntOrNull()
+            val id = ctx.pathParam("goalId").toIntOrNull()
+            val userId = ctx.pathParam("userId").toIntOrNull()
 
             if(!validateUserIdAndId(ctx, userId, id))return
 
