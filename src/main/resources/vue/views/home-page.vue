@@ -3,13 +3,30 @@
   <app-layout>
      <div class="main-container" style="background-color: #F5F7FA; height: 50vh; width: 100vw; display: flex; flex-direction: column; padding: 20px;">
       <!-- Welcome Section -->
-      <div class="welcome-section" style="flex: 0 0 auto; margin-bottom: 20px;">
-        <h1 class="welcome-heading" style="font-size: 2rem; color: #3C4858; margin: 0;">
-          <i class="fas fa-user-circle" style="margin-right: 10px;"></i>
-          Welcome, {{ userName }}!</h1>
-      </div>
+       <div class="welcome-section" style="display: flex; align-items: center; justify-content: flex-start; margin-bottom: 20px;">
+         <h1 class="welcome-heading" style="font-size: 2rem; color: #3C4858; margin: 0;">
+           <i class="fas fa-user-circle" style="margin-right: 10px;"></i>
+           Welcome, {{ userName }}!
+         </h1>
 
-      <!-- First container section -->
+         <a
+             href="/user-attributes"
+             class="btn btn-primary"
+             style="margin-left: 20px; font-size: 1rem; padding: 10px 20px;">
+           Show Your Biometrics
+         </a>
+
+<!--feature to be added later -->
+<!--         <a-->
+<!--             href="/user-attributes"-->
+<!--             class="btn btn-primary"-->
+<!--             style="margin-left: 20px; font-size: 1rem; padding: 10px 20px;">-->
+<!--          Add a Daily Goal-->
+<!--         </a>-->
+       </div>
+
+
+       <!-- First container section -->
       <div class="split-section" style="display: flex; flex: 1 1 auto;">
         <!-- Daily Goals -->
         <dotlottie-player src="https://lottie.host/aa1fd7bb-a610-46a7-b61c-410a7b597635/rpSgatxs1L.lottie" background="transparent" speed="1" style="width: 100px; height: 200px" loop autoplay></dotlottie-player>
@@ -133,7 +150,7 @@ app.component('home-page',
             // Set the calculated BMI value
             this.bmi = bmi.toFixed(2);
           } else {
-            // If fields are empty, alert the user
+            //  alert the user if fields are empty
             alert("Please enter both weight and height.");
           }
         }

@@ -21,7 +21,7 @@ class DailyGoalsDAO {
                it[goalDescription] = dailyGoals.goalDescription
                it[isCompleted] = dailyGoals.isCompleted
                it[priority] = dailyGoals.priority
-               it[ createdAt] = dailyGoals.createdAt
+               it[createdAt] = dailyGoals.createdAt
                it[date] = dailyGoals.date
                it[notes ] = dailyGoals.notes
            } get DailyGoals.id

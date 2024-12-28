@@ -8,9 +8,9 @@ data class DailyGoal(
     var userId: Int,
     val goalName: String,
     val goalDescription: String,
-    val createdAt: DateTime = DateTime.now(),
+    val createdAt: DateTime,
     val isCompleted: Boolean = false,
-    val date: DateTime = DateTime.now(),
+    val date: DateTime,
     val priority: Int,
     val notes: String
 )

@@ -61,6 +61,15 @@ class JavalinConfig{
         app.delete("/api/users/{userId}/milestones/{id}", MileStonesController::deleteMileStoneOfUser)
         app.get("/api/users/{userId}/milestones", MileStonesController::getAllMilesStonesOfUser)
 
+
+        //    user-attribute-apis-to-track-user-attributes
+
+        app.post("/api/users/{userId}/attributes", UserAttributesController::addUserAttributes)
+        app.patch("/api/users/{userId}/attributes", UserAttributesController::updateUserAttributes)
+        app.delete("/api/users/{userId}/attributes", UserAttributesController::deleteUserAttributes)
+        app.get("/api/users/{userId}/attributes", UserAttributesController::getUserAttributes)
+
+
 //        vue endpoints for frontend - page starts with login page
         app.get("/", VueComponent("<login-or-signup></login-or-signup>"))
         app.get("/homepage", VueComponent("<home-page></home-page>"))
@@ -71,7 +80,7 @@ class JavalinConfig{
         app.get("/milestones-overview", VueComponent("<milestones-overview></milestones-overview>"))
         app.get("/daily-habits-overview", VueComponent("<daily-habits-overview></daily-habits-overview>"))
         app.get("/lifestyle-suggestion", VueComponent("<lifestyle-suggestion></lifestyle-suggestion>"))
-
+        app.get("/user-attributes", VueComponent("<user-attributes-overview></user-attributes-overview>"))
     }
 
     private fun getRemoteAssignedPort(): Int {
