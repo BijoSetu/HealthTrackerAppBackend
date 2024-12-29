@@ -4,6 +4,7 @@ Health Tracker app version: V2.0
 Health now is an applications that users can use to track their health  and habits. It includes features like user login , user signup , daily goals setting, noting milestones etc..
 
 Features
+
 1.User profile: User login, User signup, Deleting an account, Updating user info
 
 2.DailyGoals tracker: Create dailygoals, update them and track your dailygoals status
