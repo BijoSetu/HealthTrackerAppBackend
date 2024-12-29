@@ -74,14 +74,17 @@ app.component("user-profile", {
     updateUser: function () {
       const userId = localStorage.getItem('userId');
       const url = `/api/users/${userId}`
-      axios.put(url,
+      axios.patch(url,
           {
          name:this.user.name,
             email: this.user.email,
 
           })
-          .then(response =>
-              this.user.push(response.data))
+          .then(response => {
+                this.user.push(response.data);
+                localStorage.setItem("userName",response.data.user.name)
+              }
+          )
           .catch(error => {
             console.log(error)
           })
