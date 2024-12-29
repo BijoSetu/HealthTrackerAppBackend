@@ -21,7 +21,7 @@ Features
 
 User login creds:
 
-email : john.mark@example.com
+email : john.mark@example.com  , 
 password: password123
 
 
