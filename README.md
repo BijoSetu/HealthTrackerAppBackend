@@ -5,11 +5,17 @@ Health now is an applications that users can use to track their health  and habi
 
 Features
 1.User profile: User login, User signup, Deleting an account, Updating user info
+
 2.DailyGoals tracker: Create dailygoals, update them and track your dailygoals status
+
 3.Daily habits tracking: Check your habits like water intake, steps completed etc
+
 4.Milestones : Note down important milestones in your health journey
+
 5.Health suggestions : Generate suggestions based upon your habits to improve your health life
+
 6.BMI calculator: Understand your body mass index ratio
+
 7.UserAttributes : Check the user biometrics
 
 User login creds:
